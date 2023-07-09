@@ -1,0 +1,24 @@
+{
+  "name": "team_ed",
+  "version": "1.0.0",
+  "description": "동국대학교 2023 여름학기 산학협력프로젝트 - 위성 데이터 수집 및 대시보드 개발",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akasima/Team-ED.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akasima/Team-ED/issues"
+  },
+  "homepage": "https://github.com/akasima/Team-ED#readme"
+}
