@@ -85,12 +85,7 @@ function processTLEData(tleData) {
       // console.log("Ephemeris Type:", line1Fields.ephemerisType);
       // console.log("Element Number:", line1Fields.elementNumber);
       // console.log("Checksum:", line1Fields.checksum);
-
-      if (line2Fields && line2Fields.inclination) {
-        console.log("Inclination:", line2Fields.inclination);
-      } else {
-        console.error("Inclination data is not available for this TLE.");
-      }
+      // console.log("Inclination:", line2Fields.inclination);
       // console.log("Right Ascension:", line2Fields.rightAscension);
       // console.log("Eccentricity:", line2Fields.eccentricity);
       // console.log("Argument of Perigee:", line2Fields.argumentOfPerigee);
