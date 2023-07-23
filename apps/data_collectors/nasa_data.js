@@ -120,6 +120,8 @@ function saveTLEData(tleData) {
     const line1Fields = tle.line1Fields;
     const line2Fields = tle.line2Fields;
 
+    console.log("Attempting to save TLE data:", name, satellite_id);
+    
     connection.query(
       query,
       [
