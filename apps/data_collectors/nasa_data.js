@@ -100,7 +100,7 @@ function processTLEData(tleData) {
       console.log("-------------------------------------------------");
 
       extractedTLEData.push({
-        satelliteId: tle.satellite_number,
+        satellite_id: line1Fields.satelliteNumber, // 수정: satellite_id를 line1Fields.satelliteNumber로 저장
         name: tle.name,
         date: tle.date,
         line1: tle.line1,
@@ -121,7 +121,7 @@ function saveTLEData(tleData) {
     "INSERT INTO tle_data (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   tleData.forEach((tle) => {
-    const satelliteId = tle.satelliteId;
+    const satellite_id = tle.satellite_id;
     const name = tle.name;
     const date = tle.date;
     const line1Fields = tle.line1Fields;
@@ -130,7 +130,7 @@ function saveTLEData(tleData) {
     connection.query(
       query,
       [
-        satelliteId,
+        satellite_id,
         name,
         date,
         line1Fields.satelliteNumber,
@@ -162,4 +162,11 @@ function saveTLEData(tleData) {
   });
 }
 
-fetchTLE();
+connection.connect((error) => {
+  if (error) {
+    console.error("Error connecting to the database:", error);
+  } else {
+    console.log("Connected to the MySQL database.");
+    fetchTLE();
+  }
+});
