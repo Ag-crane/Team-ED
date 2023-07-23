@@ -4,13 +4,6 @@ const mysql = require("mysql2");
 const apiKey = "eqM1mTFhhBIOgdK1Obq4xTiJhFxzXMAwv7xZtnwR";
 const apiUrl = `https://tle.ivanstanojevic.me/api/tle/?api_key=${apiKey}`;
 
-const sshConfig = {
-  host: "14.52.137.81",
-  port: 22,
-  username: "team_ed_user3",
-  password: "team_ed!@#123",
-};
-
 const mysqlConfig = {
   host: "127.0.0.1",
   user: "team_ed",
@@ -100,7 +93,7 @@ function processTLEData(tleData) {
       console.log("-------------------------------------------------");
 
       extractedTLEData.push({
-        satelliteId: tle.satellite_number,
+        satellite_id: line1Fields.satelliteNumber,
         name: tle.name,
         date: tle.date,
         line1: tle.line1,
@@ -121,7 +114,7 @@ function saveTLEData(tleData) {
     "INSERT INTO tle_data (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   tleData.forEach((tle) => {
-    const satelliteId = tle.satellite_id;
+    const satellite_id = tle.satellite_id;
     const name = tle.name;
     const date = tle.date;
     const line1Fields = tle.line1Fields;
@@ -130,7 +123,7 @@ function saveTLEData(tleData) {
     connection.query(
       query,
       [
-        satelliteId,
+        satellite_id,
         name,
         date,
         line1Fields.satelliteNumber,
@@ -153,11 +146,7 @@ function saveTLEData(tleData) {
       ],
       (error, results) => {
         if (error) {
-          if (error.code === "ER_DUP_ENTRY") {
-            console.warn(`Data with satellite_id ${satelliteId} already exists. Skipping...`);
-          } else {
-            console.error("Error saving TLE data:", error);
-          }
+          console.error("Error saving TLE data:", error);
         } else {
           console.log("TLE data saved successfully for:", name);
         }
@@ -166,4 +155,11 @@ function saveTLEData(tleData) {
   });
 }
 
-fetchTLE();
+connection.connect((error) => {
+  if (error) {
+    console.error("Error connecting to the database:", error);
+  } else {
+    console.log("Connected to the MySQL database.");
+    fetchTLE();
+  }
+});
