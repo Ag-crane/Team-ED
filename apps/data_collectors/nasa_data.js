@@ -16,24 +16,30 @@ const connection = mysql.createConnection(mysqlConfig);
 
 async function fetchTLE() {
   try {
-    const response = await axios.get(apiUrl);
-    const tleData = response.data;
+    let page = 1;
+    let hasNextPage = true;
 
-    console.log("API Response Data:", tleData);
+    while (hasNextPage) {
+      const response = await axios.get(`${apiUrl}&page=${page}`);
+      const tleData = response.data;
 
-    if (!tleData.member || tleData.member.length === 0) {
-      console.error("TLE data is not available in the API response.");
-      return;
-    }
+      if (!tleData.member || tleData.member.length === 0) {
+        hasNextPage = false;
+        console.log("No more data found in API response.");
+        break;
+      }
 
-    const extractedTLEData = processTLEData(tleData.member);
-    if (extractedTLEData.length > 0) {
-      saveTLEData(extractedTLEData);
-    } else {
-      console.error("Processed TLE data is empty or invalid.");
+      const extractedTLEData = processTLEData(tleData.member);
+      if (extractedTLEData.length > 0) {
+        await saveTLEData(extractedTLEData);
+      } else {
+        console.error("Processed TLE data is empty or invalid.");
+      }
+
+      page++;
     }
   } catch (error) {
-    console.error("Error fetching TLE data:", error);
+    console.error("Error fetching or saving TLE data:", error);
   }
 }
 
@@ -43,7 +49,7 @@ function processTLEData(tleData) {
   tleData.forEach((tle) => {
     const line1 = tle.line1;
     const line2 = tle.line2;
-    console.log("Satellite Name:", tle.name);
+    //console.log("Satellite Name:", tle.name);
     if (line1 && line2) {
       const line1Fields = {
         satelliteNumber: line1.substr(2, 5),
@@ -68,29 +74,29 @@ function processTLEData(tleData) {
         meanMotion: line2.substr(52, 11),
       };
 
-      console.log("Satellite Number:", line1Fields.satelliteNumber);
-      console.log("Classification:", line1Fields.classification);
-      console.log("Launch:", line1Fields.launch);
-      console.log("Launch Piece:", line1Fields.launchPiece);
-      console.log("Epoch:", line1Fields.epoch);
-      console.log("First Time Derivative:", line1Fields.firstTimeDerivative);
-      console.log("Second Time Derivative:", line1Fields.secondTimeDerivative);
-      console.log("BSTAR Drag Term:", line1Fields.bstarDragTerm);
-      console.log("Ephemeris Type:", line1Fields.ephemerisType);
-      console.log("Element Number:", line1Fields.elementNumber);
-      console.log("Checksum:", line1Fields.checksum);
+      // console.log("Satellite Number:", line1Fields.satelliteNumber);
+      // console.log("Classification:", line1Fields.classification);
+      // console.log("Launch:", line1Fields.launch);
+      // console.log("Launch Piece:", line1Fields.launchPiece);
+      // console.log("Epoch:", line1Fields.epoch);
+      // console.log("First Time Derivative:", line1Fields.firstTimeDerivative);
+      // console.log("Second Time Derivative:", line1Fields.secondTimeDerivative);
+      // console.log("BSTAR Drag Term:", line1Fields.bstarDragTerm);
+      // console.log("Ephemeris Type:", line1Fields.ephemerisType);
+      // console.log("Element Number:", line1Fields.elementNumber);
+      // console.log("Checksum:", line1Fields.checksum);
 
       if (line2Fields && line2Fields.inclination) {
         console.log("Inclination:", line2Fields.inclination);
       } else {
         console.error("Inclination data is not available for this TLE.");
       }
-      console.log("Right Ascension:", line2Fields.rightAscension);
-      console.log("Eccentricity:", line2Fields.eccentricity);
-      console.log("Argument of Perigee:", line2Fields.argumentOfPerigee);
-      console.log("Mean Anomaly:", line2Fields.meanAnomaly);
-      console.log("Mean Motion:", line2Fields.meanMotion);
-      console.log("-------------------------------------------------");
+      // console.log("Right Ascension:", line2Fields.rightAscension);
+      // console.log("Eccentricity:", line2Fields.eccentricity);
+      // console.log("Argument of Perigee:", line2Fields.argumentOfPerigee);
+      // console.log("Mean Anomaly:", line2Fields.meanAnomaly);
+      // console.log("Mean Motion:", line2Fields.meanMotion);
+      // console.log("-------------------------------------------------");
 
       extractedTLEData.push({
         satellite_id: tle.satelliteId,
