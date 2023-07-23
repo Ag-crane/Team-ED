@@ -93,7 +93,7 @@ function processTLEData(tleData) {
       console.log("-------------------------------------------------");
 
       extractedTLEData.push({
-        satellite_id: line1Fields.satelliteNumber,
+        satellite_id: tle.satelliteId,
         name: tle.name,
         date: tle.date,
         line1: tle.line1,
