@@ -121,7 +121,7 @@ function saveTLEData(tleData) {
     "INSERT INTO tle_data (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   tleData.forEach((tle) => {
-    const satelliteId = tle.satellite_id; // 수정: satellite_id를 satelliteId로 변경
+    const satelliteId = tle.satellite_id;
     const name = tle.name;
     const date = tle.date;
     const line1Fields = tle.line1Fields;
@@ -153,7 +153,11 @@ function saveTLEData(tleData) {
       ],
       (error, results) => {
         if (error) {
-          console.error("Error saving TLE data:", error);
+          if (error.code === "ER_DUP_ENTRY") {
+            console.warn(`Data with satellite_id ${satelliteId} already exists. Skipping...`);
+          } else {
+            console.error("Error saving TLE data:", error);
+          }
         } else {
           console.log("TLE data saved successfully for:", name);
         }
