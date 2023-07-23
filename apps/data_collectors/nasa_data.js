@@ -120,37 +120,51 @@ function saveTLEData(tleData) {
     const line1Fields = tle.line1Fields;
     const line2Fields = tle.line2Fields;
 
-    console.log("Attempting to save TLE data:", name, satellite_id);
-    
+    // 이미 존재하는 satellite_id인 경우에는 중복 저장하지 않도록 처리
     connection.query(
-      query,
-      [
-        satellite_id,
-        name,
-        date,
-        line1Fields.satelliteNumber,
-        line1Fields.classification,
-        line1Fields.launch,
-        line1Fields.launchPiece,
-        line1Fields.epoch,
-        line1Fields.firstTimeDerivative,
-        line1Fields.secondTimeDerivative,
-        line1Fields.bstarDragTerm,
-        line1Fields.ephemerisType,
-        line1Fields.elementNumber,
-        line1Fields.checksum,
-        line2Fields ? line2Fields.inclination : null,
-        line2Fields ? line2Fields.rightAscension : null,
-        line2Fields ? line2Fields.eccentricity : null,
-        line2Fields ? line2Fields.argumentOfPerigee : null,
-        line2Fields ? line2Fields.meanAnomaly : null,
-        line2Fields ? line2Fields.meanMotion : null,
-      ],
+      "SELECT COUNT(*) AS count FROM tle_data WHERE satellite_id = ?",
+      [satellite_id],
       (error, results) => {
         if (error) {
-          console.error("Error saving TLE data:", error);
+          console.error("Error checking for duplicate satellite_id:", error);
         } else {
-          console.log("TLE data saved successfully for:", name);
+          const count = results[0].count;
+          if (count === 0) {
+            connection.query(
+              query,
+              [
+                satellite_id,
+                name,
+                date,
+                line1Fields.satelliteNumber,
+                line1Fields.classification,
+                line1Fields.launch,
+                line1Fields.launchPiece,
+                line1Fields.epoch,
+                line1Fields.firstTimeDerivative,
+                line1Fields.secondTimeDerivative,
+                line1Fields.bstarDragTerm,
+                line1Fields.ephemerisType,
+                line1Fields.elementNumber,
+                line1Fields.checksum,
+                line2Fields ? line2Fields.inclination : null,
+                line2Fields ? line2Fields.rightAscension : null,
+                line2Fields ? line2Fields.eccentricity : null,
+                line2Fields ? line2Fields.argumentOfPerigee : null,
+                line2Fields ? line2Fields.meanAnomaly : null,
+                line2Fields ? line2Fields.meanMotion : null,
+              ],
+              (error, results) => {
+                if (error) {
+                  console.error("Error saving TLE data:", error);
+                } else {
+                  console.log("TLE data saved successfully for:", name);
+                }
+              }
+            );
+          } else {
+            console.log(`Skipping duplicate data for satellite_id: ${satellite_id}`);
+          }
         }
       }
     );
