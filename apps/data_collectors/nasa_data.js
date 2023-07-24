@@ -14,6 +14,10 @@ const mysqlConfig = {
 
 const connection = mysql.createConnection(mysqlConfig);
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function fetchTLE() {
   try {
     let page = 1;
@@ -29,6 +33,10 @@ async function fetchTLE() {
         break;
       }
 
+      if (page % 10 === 0) {
+        console.log(`Processing page ${page}`);
+      }
+
       const extractedTLEData = processTLEData(tleData.member);
       if (extractedTLEData.length > 0) {
         await saveTLEData(extractedTLEData);
@@ -36,12 +44,15 @@ async function fetchTLE() {
         console.error("Processed TLE data is empty or invalid.");
       }
 
+      await sleep(1000);
+
       page++;
     }
   } catch (error) {
     console.error("Error fetching or saving TLE data:", error);
   }
 }
+
 
 function processTLEData(tleData) {
   const extractedTLEData = [];
