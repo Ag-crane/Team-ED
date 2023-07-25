@@ -21,9 +21,10 @@ async function sleep(ms) {
 async function fetchTLE() {
   try {
     let page = 1;
-    let hasNextPage = true;
+    let pageCounter = 0;
 
     while (hasNextPage) {
+      pageCounter++;
       const response = await axios.get(`${apiUrl}&page=${page}`);
       const tleData = response.data;
 
@@ -47,6 +48,12 @@ async function fetchTLE() {
       await sleep(1000);
 
       page++;
+
+      if (pageCounter === 100) {
+        await sleep(10000);
+        pageCounter = 0;
+      }
+
     }
   } catch (error) {
     console.error("Error fetching or saving TLE data:", error);
@@ -146,7 +153,7 @@ function saveTLEData(tleData) {
               if (error) {
                 console.error("Error saving TLE data:", error);
               } else {
-                console.log("TLE data saved successfully for:", name);
+                //console.log("TLE data saved successfully for:", name);
               }
             }
           );
@@ -181,7 +188,7 @@ function saveTLEData(tleData) {
               if (error) {
                 console.error("Error updating TLE data:", error);
               } else {
-                console.log("TLE data updated successfully for:", name);
+                //console.log("TLE data updated successfully for:", name);
               }
             });
           } else {
