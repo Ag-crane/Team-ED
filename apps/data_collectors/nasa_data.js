@@ -51,7 +51,8 @@ async function fetchTLE() {
       page++;
 
       if (pageCounter === 100) {
-        await sleep(10000);
+        console.log(`Wait...`);
+        await sleep( 9 * 60 * 1000); //API 속도 제한 방지
         pageCounter = 0;
       }
 
@@ -205,7 +206,7 @@ async function run() {
   while (true) {
     console.log("Fetching TLE data from API...");
     await fetchTLE();
-    await sleep(60 * 60 * 1000);
+    await sleep(90 * 60 * 1000); // 90분마다 갱신
   }
 }
 
