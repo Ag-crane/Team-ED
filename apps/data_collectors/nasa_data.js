@@ -21,6 +21,7 @@ async function sleep(ms) {
 async function fetchTLE() {
   try {
     let page = 1;
+    let hasNextPage = true;
     let pageCounter = 0;
 
     while (hasNextPage) {
