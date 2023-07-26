@@ -26,7 +26,9 @@ async function fetchTLE() {
 
     while (hasNextPage) {
       pageCounter++;
-      const fetchTime = new Date(); 
+      const fetchTime = new Date();
+      const formattedFetchTime = fetchTime.toISOString().slice(0, 19).replace('T', ' '); 
+      
       const response = await axios.get(`${apiUrl}&page=${page}`);
       const tleData = response.data;
 
@@ -40,7 +42,7 @@ async function fetchTLE() {
         console.log(`Processing page ${page}`);
       }
 
-      const extractedTLEData = processTLEData(tleData.member, fetchTime); 
+      const extractedTLEData = processTLEData(tleData.member, formattedFetchTime); 
       if (extractedTLEData.length > 0) {
         await saveTLEData(extractedTLEData);
       } else {
@@ -115,7 +117,7 @@ function processTLEData(tleData, fetchTime) {
         line2: tle.line2,
         line1Fields: line1Fields,
         line2Fields: line2Fields,
-        fetch_time: fetchTime.toISOString(),
+        fetch_timestamp: fetchTime,
       });
     } else {
       console.error("Line data is not available for this TLE.");
@@ -136,7 +138,7 @@ function saveTLEData(tleData) {
     const date = tle.date;
     const line1Fields = tle.line1Fields;
     const line2Fields = tle.line2Fields;
-    const fetch_time = tle.fetch_time; 
+    const fetch_timestamp = tle.fetch_timestamp;
 
     connection.query(querySelect, [satellite_id], (error, results) => {
       if (error) {
@@ -166,7 +168,7 @@ function saveTLEData(tleData) {
               argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
               mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
               mean_motion: line2Fields ? line2Fields.meanMotion : null,
-              fetch_timestamp: fetch_time,
+              fetch_timestamp,
             },
             (error, results) => {
               if (error) {
@@ -198,7 +200,7 @@ function saveTLEData(tleData) {
             argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
             mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
             mean_motion: line2Fields ? line2Fields.meanMotion : null,
-            fetch_timestamp: fetch_time,
+            fetch_timestamp,
           };
 
           const hasChanges = JSON.stringify(existingData) !== JSON.stringify(newData);
