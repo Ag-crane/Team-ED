@@ -26,6 +26,7 @@ async function fetchTLE() {
 
     while (hasNextPage) {
       pageCounter++;
+      const fetchTime = new Date(); 
       const response = await axios.get(`${apiUrl}&page=${page}`);
       const tleData = response.data;
 
@@ -39,7 +40,7 @@ async function fetchTLE() {
         console.log(`Processing page ${page}`);
       }
 
-      const extractedTLEData = processTLEData(tleData.member);
+      const extractedTLEData = processTLEData(tleData.member, fetchTime); 
       if (extractedTLEData.length > 0) {
         await saveTLEData(extractedTLEData);
       } else {
@@ -52,17 +53,30 @@ async function fetchTLE() {
 
       if (pageCounter === 100) {
         console.log(`Wait...`);
-        await sleep( 9 * 60 * 1000); //API 속도 제한 방지
+        await sleep(9 * 60 * 1000); 
         pageCounter = 0;
       }
-
     }
   } catch (error) {
     console.error("Error fetching or saving TLE data:", error);
+    console.log("Retrying in 1 hour...");
+
+    connection.end();
+
+    await sleep(60 * 60 * 1000);
+
+    connection.connect((error) => {
+      if (error) {
+        console.error("Error reconnecting to the database:", error);
+      } else {
+        console.log("Reconnected to the MySQL database.");
+        fetchTLE(); 
+      }
+    });
   }
 }
 
-function processTLEData(tleData) {
+function processTLEData(tleData, fetchTime) {
   const extractedTLEData = [];
 
   tleData.forEach((tle) => {
@@ -101,6 +115,7 @@ function processTLEData(tleData) {
         line2: tle.line2,
         line1Fields: line1Fields,
         line2Fields: line2Fields,
+        fetch_time: fetchTime.toISOString(),
       });
     } else {
       console.error("Line data is not available for this TLE.");
@@ -121,6 +136,7 @@ function saveTLEData(tleData) {
     const date = tle.date;
     const line1Fields = tle.line1Fields;
     const line2Fields = tle.line2Fields;
+    const fetch_time = tle.fetch_time; 
 
     connection.query(querySelect, [satellite_id], (error, results) => {
       if (error) {
@@ -150,6 +166,7 @@ function saveTLEData(tleData) {
               argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
               mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
               mean_motion: line2Fields ? line2Fields.meanMotion : null,
+              fetch_timestamp: fetch_time,
             },
             (error, results) => {
               if (error) {
@@ -181,6 +198,7 @@ function saveTLEData(tleData) {
             argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
             mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
             mean_motion: line2Fields ? line2Fields.meanMotion : null,
+            fetch_timestamp: fetch_time,
           };
 
           const hasChanges = JSON.stringify(existingData) !== JSON.stringify(newData);
