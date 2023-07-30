@@ -13,4 +13,6 @@ public interface TleDataRepository extends JpaRepository<TleData, Long> {
     List<TleData> findAllByOrderByDateDesc();
 
     Page<TleData> findAll(Pageable pageable);
+
+    Page<TleData> findAllByOrderByFetchTimestampDesc(Pageable pageable);
 }
