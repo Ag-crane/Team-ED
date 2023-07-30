@@ -38,6 +38,11 @@ public class TleDataController {
         return service.findPaginated(pageNo, 15);
     }
 
+    @GetMapping("/page/timestamp/{pageNo}")
+    public Page<TleData> getPaginatedTleDataOrderByFetchTimestamp(@PathVariable int pageNo) {
+        return service.findPaginatedOrderByFetchTimestamp(pageNo, 15);
+    }
+
     @GetMapping("/recent")
     public List<RecentSatelliteDto> getRecentTleData() {
         return service.getRecentTleData();

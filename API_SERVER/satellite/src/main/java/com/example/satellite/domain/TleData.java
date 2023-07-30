@@ -76,4 +76,6 @@ public class TleData {
     @Column(name = "mean_motion")
     private String meanMotion;
 
+    @Column(name = "fetch_timestamp")
+    private Date fetchTimestamp;
 }

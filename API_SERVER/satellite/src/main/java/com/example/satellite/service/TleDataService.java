@@ -59,4 +59,9 @@ public class TleDataService {
         return this.repository.findAll(pageable);
     }
 
+    public Page<TleData> findPaginatedOrderByFetchTimestamp(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return this.repository.findAllByOrderByFetchTimestampDesc(pageable);
+    }
+
 }
