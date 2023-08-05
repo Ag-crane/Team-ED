@@ -9,7 +9,6 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/satellite?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
     url: jdbc:mysql://14.52.137.81:3306/team_ed_user3?useSSL=false&serverTimezone=UTC
 #    username: satellite
 #    password: Abcd123!
@@ -19,8 +18,24 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+jwt:
+  issuer: cro7710@gmail.com
+  secret_key: satellite-project
+
+#app:
+#  datasource2:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/root?useSSL=false&serverTimezone=UTC
+#    username: satellite
+#    password: Abcd123!
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
