@@ -91,11 +91,55 @@
                     <tbody id="data-list-table"></tbody>
                   </table>
                 </div>
+                <!-- pagenation -->
+                <nav aria-label="page navigation">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">4</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">5</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">6</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">7</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">8</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">9</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">10</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>
           <!-- content-wrapper ends -->
-          <!-- partial:../../partials/_footer.html -->
           <footer class="footer">
             <div class="container-fluid clearfix">
               <span
@@ -139,24 +183,40 @@
     ></script>
     <!-- End custom js for this page-->
   </body>
-  <!-- <script>
-    for (let i = 0; i < 15; i++) {
-      document.getElementById("data-list-table").innerHTML += `
-        <tr>
-          <td>${i + 1}</td>
-          <td>-</td>
-          <td>-</td>
-          <td>
-            <label class="badge badge-danger">-</label>
-          </td>
-          <td>-</td>
-          <td>-</td>
-        </tr>
-      `;
-    }
-  </script> -->
   <script>
-    fetch("sample_data.json")
+    // 정의
+    function fetchData(pageNumber) {
+      fetch(`http://3.34.129.187:8080/data/page/${pageNumber}`)
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("data-list-table").innerHTML = ""; // Clear existing data
+          data.content.forEach((item, index) => {
+            document.getElementById("data-list-table").innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.satelliteId}</td>
+              <td>${item.name}</td>
+              <td><label class="badge badge-danger">${item.classification}</label></td>
+              <td>${item.launch.slice(0, 2)}</td>
+              <td>${item.date.slice(0, 10)}</td>
+            </tr>
+          `;
+          });
+        });
+    }
+
+    // 초기화 - 1페이지
+    fetchData(1);
+
+    document.querySelectorAll('.page-link').forEach((link, index) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        fetchData(index);
+      });
+    });
+</script>
+  <!-- <script>
+    fetch("http://3.34.129.187:8080/data/page/1")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Network response was not ok.");
@@ -165,7 +225,7 @@
       })
       .then((data) => {
         // JSON 데이터를 처리하는 로직을 여기에 작성합니다.
-        data.forEach((item, index) => {
+        data.content.forEach((item, index) => {
           document.getElementById("data-list-table").innerHTML += `
           <tr>
             <td>${index + 1}</td>
@@ -183,5 +243,5 @@
       .catch((error) => {
         console.error("Error:", error);
       });
-  </script>
+  </script> -->
 </html>
