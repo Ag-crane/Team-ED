@@ -26,11 +26,11 @@
           <div class="row w-100">
             <div class="col-lg-4 mx-auto">
               <div class="auto-form-wrapper">
-                <form action="#">
+                <form id="loginForm">
                   <div class="form-group">
-                    <label class="label">Username</label>
+                    <label class="label">Email</label>
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="Username">
+                      <input  type="text" id="email" name="email" class="form-control" placeholder="Email">
                       <div class="input-group-append">
                         <span class="input-group-text">
                           <i class="mdi mdi-check-circle-outline"></i>
@@ -41,7 +41,7 @@
                   <div class="form-group">
                     <label class="label">Password</label>
                     <div class="input-group">
-                      <input type="password" class="form-control" placeholder="*********">
+                      <input type="password" id="password" name="password" class="form-control" placeholder="*********">
                       <div class="input-group-append">
                         <span class="input-group-text">
                           <i class="mdi mdi-check-circle-outline"></i>
@@ -50,7 +50,7 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <button class="btn btn-primary submit-btn btn-block">Login</button>
+                    <button type="submit" class="btn btn-primary submit-btn btn-block">Login</button>
                   </div>
                   <div class="form-group d-flex justify-content-between">
                     <div class="form-check form-check-flat mt-0">
@@ -99,5 +99,38 @@
     <script src="assets/js/shared/misc.js"></script>
     <!-- endinject -->
     <script src="assets/js/shared/jquery.cookie.js" type="text/javascript"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', function(event) {
+        // 폼의 기본제출동작 막기
+        event.preventDefault();
+  
+        // 폼 데이터를 가져와 json 형식으로 변환
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        const jsonData = JSON.stringify(data);
+        console.log(jsonData)
+
+        // 서버에 POST 요청 전송
+        fetch('http://3.34.129.187:8080/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonData,
+        })
+        .then(response => response.json())
+        .then(data => { // 서버로부터 받은 응답 : access token
+          if (data.accessToken == null) {
+            alert('로그인 실패');
+            return;
+          }else{
+            console.log(data);
+            localStorage.setItem('token', data.accessToken);  // 로컬스토리지에 토큰 저장
+            location.href = 'dashboard.html'; // 메인 페이지로 이동
+          }
+        }) 
+        .catch(error => console.error('An error occurred:', error));
+      });
+    </script>
   </body>
 </html>
