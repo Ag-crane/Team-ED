@@ -3,6 +3,11 @@
 
 # 1. 시스템 설치
 ### 환경설정
+1. config.yml 생성
+```
+config.yml.example 파일을 config.yml 로 복사
+```
+
 1. config.yml 파일 수정
 ```
 database 정보 수정
