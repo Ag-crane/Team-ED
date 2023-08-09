@@ -74,19 +74,22 @@
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
-
             <div class="col-lg-6 grid-margin stretch-card">
               <div class="card">
                 <!-- <div class="p-4 border-bottom bg-light">
                   <h4 class="card-title mb-0">일별 수집 데이터</h4>
                 </div> -->
                 <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center pb-4">
+                  <div
+                    class="d-flex justify-content-between align-items-center pb-4"
+                  >
                     <h4 class="card-title mb-0">일별 수집 데이터</h4>
                     <div id="bar-traffic-legend"></div>
                   </div>
-                  <p class="mb-4" id="dashboardChart-p">최근 7일간 수집한 총 ? 개의 데이터를 수집하였습니다.</p>
-                  <canvas id="dashboardChart1" style="height:250px"></canvas>
+                  <p class="mb-4" id="dashboardChart-p">
+                    최근 7일간 수집한 총 ? 개의 데이터를 수집하였습니다.
+                  </p>
+                  <canvas id="dashboardChart1" style="height: 250px"></canvas>
                 </div>
               </div>
             </div>
@@ -129,8 +132,21 @@
           <!-- content-wrapper ends -->
           <footer class="footer">
             <div class="container-fluid clearfix">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
+              <span
+                class="text-muted d-block text-center text-sm-left d-sm-inline-block"
+                >Copyright © bootstrapdash.com 2020</span
+              >
+              <span
+                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
+              >
+                Free
+                <a
+                  href="https://www.bootstrapdash.com/bootstrap-admin-template/"
+                  target="_blank"
+                  >Bootstrap admin templates</a
+                >
+                from Bootstrapdash.com</span
+              >
             </div>
           </footer>
         </div>
@@ -159,34 +175,35 @@
     ></script>
   </body>
   <script>
-    fetch('sample_data.json')
-    .then(res => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok.');
-      }
-      return res.json();
-    })
-    .then(data => {
-      // JSON 데이터를 처리하는 로직을 여기에 작성합니다.
-      // date 를 기준으로 내림차순 정렬
-      data.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return dateB - dateA;
-      });
-      // 최근 수집한 데이터 5개를 테이블에 추가
-      data.slice(0, 5).forEach((item, index) => {
-        document.getElementById("table1-body").innerHTML += `
+    fetch("http://3.34.129.187:8080/data/page/timestamp/1")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return res.json();
+      })
+      .then((data) => {
+
+        // 데이터를 date 순으로 정렬
+        data.content.sort(function (a, b) {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB - dateA;
+        });
+
+        // 최근 수집한 데이터 5개만 테이블에 추가
+        data.content.slice(0, 5).forEach((item, index) => {
+          document.getElementById("table1-body").innerHTML += `
           <tr>
             <td>${index + 1}</td>
-            <td>${item.date.slice(0,10)} ${item.date.slice(11,19)}</td>
+            <td>${item.date.slice(0, 10)} ${item.date.slice(11, 19)}</td>
             <td>${item.name}</td>
           </tr>
         `;
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
       });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
   </script>
 </html>
