@@ -29,14 +29,43 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function saveTLEInfo(updatedCount, newCount, totalCount, fetchTime) {
+  const queryInsertInfo = "INSERT INTO tle_data_info (updated_count, new_count, total_count, fetch_time) VALUES (?, ?, ?, ?)";
+
+  connection.query(queryInsertInfo, [updatedCount, newCount, totalCount, fetchTime], (error, results) => {
+    if (error) {
+      console.error("Error saving TLE info:", error);
+    } else {
+      console.log("TLE info saved successfully.");
+    }
+  });
+}
+
+async function getTotalCount() {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT COUNT(*) AS total_count FROM tle_data";
+
+    connection.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        if (results.length > 0) {
+          const totalCount = results[0].total_count;
+          resolve(totalCount);
+        } else {
+          resolve(0);
+        }
+      }
+    });
+  });
+}
+
 async function fetchTLE() {
   try {
     let page = 1;
     let hasNextPage = true;
     let pageCounter = 0;
-
-    const fetchTime = new Date();
-    const formattedFetchTime = fetchTime.toISOString().slice(0, 19).replace("T", " ");
+    let firstFetchTime = null;
 
     while (hasNextPage) {
       pageCounter++;
@@ -50,14 +79,18 @@ async function fetchTLE() {
         break;
       }
 
+      if (page === 1) {
+        firstFetchTime = new Date();
+      }
+
       if (page % 10 === 0) {
         console.log(`Processing page ${page}`);
       }
 
-      const extractedTLEData = processTLEData(tleData.member, formattedFetchTime);
+      const extractedTLEData = processTLEData(tleData.member, firstFetchTime);
 
       if (extractedTLEData.length > 0) {
-        await saveTLEData(extractedTLEData, formattedFetchTime);
+        await saveTLEData(extractedTLEData, firstFetchTime);
       } else {
         console.error("Processed TLE data is empty or invalid.");
       }
@@ -71,6 +104,13 @@ async function fetchTLE() {
         await sleep(15 * 60 * 1000); // 100페이지마다 15분 대기
         pageCounter = 0;
       }
+    }
+
+    if (firstFetchTime) {
+      const updatedCount = totalExtractedCount;
+      const newCount = totalNewCount;
+      const totalCount = await getTotalCount();
+      saveTLEInfo(updatedCount, newCount, totalCount, firstFetchTime.toISOString().slice(0, 19).replace("T", " "));
     }
   } catch (error) {
     console.error("Error fetching or saving TLE data:", error);
@@ -112,7 +152,6 @@ function calculateSatellitePosition(line1, line2, date) {
   };
 }
 
-
 function processTLEData(tleData, fetchTime) {
   const extractedTLEData = [];
 
@@ -150,7 +189,7 @@ function processTLEData(tleData, fetchTime) {
       const longitude = satellitePosition.longitude;
 
       extractedTLEData.push({
-        satellite_id: tle.satellite_id,
+        satellite_id: tle.satelliteId,
         name: tle.name,
         date: new Date(tle.date).toISOString().slice(0, 19).replace("T", " "),
         line1: tle.line1,
