@@ -43,13 +43,19 @@ node nasa_data.js
 ```
 
 ### API 서버 실행
-1. API SERVER 위치로 이동
+1. API SERVER/satellite 위치로 이동
 ```
-cd API_SERVER
+cd API_SERVER/satellite
 ```
-2. 서버 실행
+2. 빌드
 ```
-startup
+./gradlew clean build
+```
+3. jar 실행
+```
+API_SERVER/satellite/build/libs/satellite-0.0.1-SNAPSHOT.jar 에 있는 jar 파일 실행
+nohup java -jar satellite-0.0.1-SNAPSHOT.jar &
+만약 이미 nohup으로 실행중이라면 kill -9 {pid} 로 종료 후 실행
 ```
 
 # 3. 종료 및 재시작
