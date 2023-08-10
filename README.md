@@ -28,13 +28,13 @@ npm install
 
 # 2. 실행
 ### 데이터 수집기
-1. 데이터 수집기 app 위치로 이동
+1. 데이터 수집기 data_collectors 위치로 이동
 ```
-cd apps
+cd apps/data_collectors
 ```
 2. PM2 를 이용한 데이터 수집기 실행
 ```
-npm run start
+pm2 start nasa_data.js
 ```
 2-1. 데이터 수집기 실횅
 ```
