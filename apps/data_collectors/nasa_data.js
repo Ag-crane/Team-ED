@@ -1,20 +1,29 @@
+const fs = require("fs");
+const path = require("path");
+const yaml = require("js-yaml");
+
+const configPath = path.join(__dirname, "..", "..", "config.yml");
+
+const configFile = fs.readFileSync(configPath, "utf8");
+const config = yaml.load(configFile);
+
 const axios = require("axios");
 const mysql = require("mysql2");
 
-const apiKey = "eqM1mTFhhBIOgdK1Obq4xTiJhFxzXMAwv7xZtnwR";
+const satellite = require("satellite.js"); 
+
+const apiKey = config.api_key;
 const apiUrl = `https://tle.ivanstanojevic.me/api/tle/?api_key=${apiKey}`;
 
 const mysqlConfig = {
-  host: "127.0.0.1",
-  user: "team_ed",
-  password: "team_ed!@#123",
-  port: 3306,
-  database: "team_ed_user3",
+  host: config.mysql.host,
+  user: config.mysql.user,
+  password: config.mysql.password,
+  port: config.mysql.port,
+  database: config.mysql.database,
 };
 
 let connection;
-
-const logTableName = "tle_data_log";
 
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,10 +36,7 @@ async function fetchTLE() {
     let pageCounter = 0;
 
     const fetchTime = new Date();
-    const formattedFetchTime = fetchTime
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
+    const formattedFetchTime = fetchTime.toISOString().slice(0, 19).replace("T", " ");
 
     while (hasNextPage) {
       pageCounter++;
@@ -48,10 +54,7 @@ async function fetchTLE() {
         console.log(`Processing page ${page}`);
       }
 
-      const extractedTLEData = processTLEData(
-        tleData.member,
-        formattedFetchTime
-      );
+      const extractedTLEData = processTLEData(tleData.member, formattedFetchTime);
 
       if (extractedTLEData.length > 0) {
         await saveTLEData(extractedTLEData, formattedFetchTime);
@@ -91,6 +94,25 @@ async function fetchTLE() {
   }
 }
 
+function calculateSatellitePosition(line1, line2, date) {
+  const satrec = satellite.twoline2satrec(line1, line2);
+
+  const positionAndVelocity = satellite.propagate(satrec, date);
+  const positionEci = positionAndVelocity.position;
+
+  const gmst = satellite.gstime(date);
+  const positionGd = satellite.eciToGeodetic(positionEci, gmst);
+
+  const latitude = satellite.degreesLat(positionGd.latitude);
+  const longitude = satellite.degreesLong(positionGd.longitude);
+
+  return {
+    latitude: latitude,
+    longitude: longitude,
+  };
+}
+
+
 function processTLEData(tleData, fetchTime) {
   const extractedTLEData = [];
 
@@ -122,8 +144,13 @@ function processTLEData(tleData, fetchTime) {
         meanMotion: line2.substr(52, 11),
       };
 
+      // 위성의 위도와 경도 계산
+      const satellitePosition = calculateSatellitePosition(line1, line2, new Date(tle.date));
+      const latitude = satellitePosition.latitude;
+      const longitude = satellitePosition.longitude;
+
       extractedTLEData.push({
-        satellite_id: tle.satelliteId,
+        satellite_id: tle.satellite_id,
         name: tle.name,
         date: new Date(tle.date).toISOString().slice(0, 19).replace("T", " "),
         line1: tle.line1,
@@ -131,6 +158,8 @@ function processTLEData(tleData, fetchTime) {
         line1Fields: line1Fields,
         line2Fields: line2Fields,
         fetch_timestamp: fetchTime,
+        latitude: latitude,
+        longitude: longitude,
       });
     } else {
       console.error("Line data is not available for this TLE.");
@@ -145,7 +174,7 @@ function saveTLEData(tleData, fetchTime) {
   const queryUpdate = "UPDATE tle_data SET ? WHERE satellite_id = ?";
   const queryInsert = "INSERT INTO tle_data SET ?";
   const queryInsertLog =
-    "INSERT INTO tle_data_log (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion, fetch_timestamp, changed_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO tle_data_log (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion, fetch_timestamp, changed_time, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   tleData.forEach((tle) => {
     const satellite_id = tle.satellite_id;
@@ -153,7 +182,9 @@ function saveTLEData(tleData, fetchTime) {
     const date = tle.date;
     const line1Fields = tle.line1Fields;
     const line2Fields = tle.line2Fields;
-    
+    const latitude = tle.latitude;
+    const longitude = tle.longitude;
+
     const changed_time = new Date()
       .toISOString()
       .slice(0, 19)
@@ -193,6 +224,8 @@ function saveTLEData(tleData, fetchTime) {
                 mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
                 mean_motion: line2Fields ? line2Fields.meanMotion : null,
                 fetch_timestamp: fetchTime,
+                latitude: latitude,
+                longitude: longitude,
               },
               (error, results) => {
                 if (error) {
@@ -229,6 +262,8 @@ function saveTLEData(tleData, fetchTime) {
                 line2Fields ? line2Fields.meanMotion : null,
                 fetchTime,
                 changed_time,
+                latitude,
+                longitude,
               ],
               (error, results) => {
                 if (error) {
@@ -237,10 +272,7 @@ function saveTLEData(tleData, fetchTime) {
                     error
                   );
                 } else {
-                  console.log(
-                    "TLE data saved to tle_data_log successfully for:",
-                    name
-                  );
+                  //console.log("TLE data saved to tle_data_log successfully for:",name);
                 }
               }
             );
@@ -269,6 +301,8 @@ function saveTLEData(tleData, fetchTime) {
               mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
               mean_motion: line2Fields ? line2Fields.meanMotion : null,
               fetch_timestamp: fetchTime,
+              latitude: latitude,
+              longitude: longitude,
             };
 
             const hasChanges =
@@ -313,13 +347,12 @@ function saveTLEData(tleData, fetchTime) {
                   line2Fields ? line2Fields.meanMotion : null,
                   fetchTime,
                   changed_time,
+                  latitude,
+                  longitude,
                 ],
                 (error, results) => {
                   if (error) {
-                    console.error(
-                      "Error saving TLE data to tle_data_log:",
-                      error
-                    );
+                    console.error("Error saving TLE data to tle_data_log:",error);
                   } else {
                     //console.log("TLE data saved to tle_data_log successfully for:", name);
                   }
