@@ -9757,7 +9757,7 @@ ul {
 .auth {
   min-height: 100vh; }
   .auth.auth-bg-1 {
-    background: url("../../images/auth/login_background.jpg");
+    background: url("../../images/login_background.jpg");
     background-size: cover; }
   .auth.register-bg-1 {
     background: url("../../images/auth/register.jpg") center center no-repeat;
