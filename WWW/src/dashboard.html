@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Star Admin Premium Bootstrap Admin Dashboard Template</title>
+    <title>위성데이터 수집 및 대시보드 개발 프로젝트</title>
     <!-- plugins:css -->
     <link
       rel="stylesheet"
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.addons.css" />
     <!-- endinject -->
     <!-- plugin css for this page -->
+    <link rel="stylesheet" href="assets/vendors/icheck/skins/all.css" />
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="assets/css/shared/style.css" />
@@ -33,16 +34,10 @@
     <link rel="stylesheet" href="assets/css/demo_1/style.css" />
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
+    <!-- custom js -->
+    <script src="assets/js/custom/removeAd.js"></script>
   </head>
   <body>
-    <script>
-      setTimeout(function () {
-        document
-          .getElementsByClassName("item-purchase-banner")
-          .item(0)
-          .remove();
-      }, 100);
-    </script>
     <div class="container-scroller">
       <!-- partial:partials/_navbar.html -->
       <!-- partial -->
@@ -98,7 +93,7 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">최근 수집 목록</h4>
-                    <table class="table table-hover">
+                    <table class="table table-hover text-center">
                       <thead>
                         <tr>
                           <th>No.</th>
@@ -155,55 +150,14 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-    <!-- plugins:js -->
+
+    <!-- template js -->
     <script src="assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="assets/vendors/js/vendor.bundle.addons.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
     <script src="assets/js/shared/off-canvas.js"></script>
     <script src="assets/js/shared/misc.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
-    <script src="assets/js/shared/chart.js"></script>
-    <script src="assets/js/demo_1/dashboard.js"></script>
-    <!-- End custom js for this page-->
-    <script
-      src="assets/js/shared/jquery.cookie.js"
-      type="text/javascript"
-    ></script>
+
+    <!-- custom js -->
+    <script src="assets/js/custom/dashboard.js"></script>
   </body>
-  <script>
-    fetch("http://3.34.129.187:8080/data/page/timestamp/1")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok.");
-        }
-        return res.json();
-      })
-      .then((data) => {
-
-        // 데이터를 date 순으로 정렬
-        data.content.sort(function (a, b) {
-          const dateA = new Date(a.date);
-          const dateB = new Date(b.date);
-          return dateB - dateA;
-        });
-
-        // 최근 수집한 데이터 5개만 테이블에 추가
-        data.content.slice(0, 5).forEach((item, index) => {
-          document.getElementById("table1-body").innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${item.date.slice(0, 10)} ${item.date.slice(11, 19)}</td>
-            <td>${item.name}</td>
-          </tr>
-        `;
-        });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  </script>
 </html>
