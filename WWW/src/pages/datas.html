@@ -40,31 +40,10 @@
   <body>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:../../partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item nav-category">Main Menu</li>
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard.html">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">대시보드</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="datas.html">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">수집 데이터</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="logs.html">
-                <i class="menu-icon typcn typcn-shopping-bag"></i>
-                <span class="menu-title">수집 로그</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- partial -->
+          <!-- partial : sidebar -->
+          <div id="sidebar"></div>
+          <!-- partial -->
+
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="col-lg-12 grid-margin stretch-card">
@@ -134,26 +113,11 @@
             </div>
           </div>
           <!-- content-wrapper ends -->
-          <footer class="footer">
-            <div class="container-fluid clearfix">
-              <span
-                class="text-muted d-block text-center text-sm-left d-sm-inline-block"
-                >Copyright © bootstrapdash.com 2020</span
-              >
-              <span
-                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
-              >
-                Free
-                <a
-                  href="https://www.bootstrapdash.com/bootstrap-admin-template/"
-                  target="_blank"
-                  >Bootstrap admin templates</a
-                >
-                from Bootstrapdash.com</span
-              >
-            </div>
-          </footer>
+
+          <!-- partial : footer -->
+          <div id="footer"></div>
           <!-- partial -->
+
         </div>
         <!-- main-panel ends -->
       </div>
@@ -161,6 +125,22 @@
     </div>
     <!-- container-scroller -->
 
+    <!-- partials -->
+    <script>
+      fetch("../partials/_footer.html")
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("footer").innerHTML = html;
+        })
+        .catch((error) => console.warn(error));
+
+      fetch("../partials/_sidebar.html")
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("sidebar").innerHTML = html;
+        })
+        .catch((error) => console.warn(error));
+    </script>
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>

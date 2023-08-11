@@ -21,8 +21,14 @@
       rel="stylesheet"
       href="../assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css"
     />
-    <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.base.css" />
-    <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.addons.css" />
+    <link
+      rel="stylesheet"
+      href="../assets/vendors/css/vendor.bundle.base.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../assets/vendors/css/vendor.bundle.addons.css"
+    />
     <!-- endinject -->
     <!-- plugin css for this page -->
     <link rel="stylesheet" href="../assets/vendors/icheck/skins/all.css" />
@@ -40,30 +46,8 @@
   <body>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:../../partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item nav-category">Main Menu</li>
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard.html">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">대시보드</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="datas.html">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">수집 데이터</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="logs.html">
-                <i class="menu-icon typcn typcn-shopping-bag"></i>
-                <span class="menu-title">수집 로그</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <!-- partial : sidebar -->
+        <div id="sidebar"></div>
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
@@ -73,16 +57,46 @@
                   <h4 class="card-title">수집 로그</h4>
                   <div class="col-lg-6 input-group mb-3">
                     <div class="input-group-prepend">
-                      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">선택하세요</button>
+                      <button
+                        class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        선택하세요
+                      </button>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" onclick="setSearchType('name');">위성 이름</a>
-                        <a class="dropdown-item" href="#" onclick="setSearchType('id');">위성 번호</a>
+                        <a
+                          class="dropdown-item"
+                          href="#"
+                          onclick="setSearchType('name');"
+                          >위성 이름</a
+                        >
+                        <a
+                          class="dropdown-item"
+                          href="#"
+                          onclick="setSearchType('id');"
+                          >위성 번호</a
+                        >
                       </div>
                     </div>
-                    <input type="text" class="form-control" id="satelliteValue" aria-label="Text input with dropdown button" placeholder="위성 이름 또는 번호">
-                    <button class="btn btn-outline-secondary" type="button" onclick="sendSearchData()">검색</button>
-                  </div>                  
-                  
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="satelliteValue"
+                      aria-label="Text input with dropdown button"
+                      placeholder="위성 이름 또는 번호"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      onclick="sendSearchData()"
+                    >
+                      검색
+                    </button>
+                  </div>
+
                   <table class="table table-hover table-bordered text-center">
                     <thead>
                       <tr>
@@ -146,34 +160,33 @@
             </div>
           </div>
           <!-- content-wrapper ends -->
-          <!-- partial:../../partials/_footer.html -->
-          <footer class="footer">
-            <div class="container-fluid clearfix">
-              <span
-                class="text-muted d-block text-center text-sm-left d-sm-inline-block"
-                >Copyright © bootstrapdash.com 2020</span
-              >
-              <span
-                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
-              >
-                Free
-                <a
-                  href="https://www.bootstrapdash.com/bootstrap-admin-template/"
-                  target="_blank"
-                  >Bootstrap admin templates</a
-                >
-                from Bootstrapdash.com</span
-              >
-            </div>
-          </footer>
+
+          <!-- partial : footer -->
+          <div id="footer"></div>
           <!-- partial -->
         </div>
         <!-- main-panel ends -->
       </div>
       <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
+    <!-- container-scroller ends -->
 
+    <!-- partials -->
+    <script>
+      fetch("../partials/_footer.html")
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("footer").innerHTML = html;
+        })
+        .catch((error) => console.warn(error));
+
+      fetch("../partials/_sidebar.html")
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("sidebar").innerHTML = html;
+        })
+        .catch((error) => console.warn(error));
+    </script>
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>
@@ -183,5 +196,4 @@
     <!-- custom js -->
     <script src="../assets/js/custom/logs.js"></script>
   </body>
-
 </html>
