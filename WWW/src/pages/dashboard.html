@@ -21,8 +21,14 @@
       rel="stylesheet"
       href="../assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css"
     />
-    <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.base.css" />
-    <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.addons.css" />
+    <link
+      rel="stylesheet"
+      href="../assets/vendors/css/vendor.bundle.base.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../assets/vendors/css/vendor.bundle.addons.css"
+    />
     <!-- endinject -->
     <!-- plugin css for this page -->
     <link rel="stylesheet" href="../assets/vendors/icheck/skins/all.css" />
@@ -69,25 +75,45 @@
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
-            <div class="col-lg-6 grid-margin stretch-card">
-              <div class="card">
-                <!-- <div class="p-4 border-bottom bg-light">
-                  <h4 class="card-title mb-0">일별 수집 데이터</h4>
-                </div> -->
-                <div class="card-body">
-                  <div
-                    class="d-flex justify-content-between align-items-center pb-4"
-                  >
+            <div class="row">
+              <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                  <!-- <div class="p-4 border-bottom bg-light">
                     <h4 class="card-title mb-0">일별 수집 데이터</h4>
-                    <div id="bar-traffic-legend"></div>
+                  </div> -->
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-center pb-4"
+                    >
+                      <h4 class="card-title mb-0">일별 수집 데이터</h4>
+                      <div id="bar-traffic-legend"></div>
+                    </div>
+                    <p class="mb-4" id="dashboardChart-p">
+                      최근 7일간 수집한 총 ? 개의 데이터를 수집하였습니다.
+                    </p>
+                    <canvas id="dashboardChart1" style="height: 250px"></canvas>
                   </div>
-                  <p class="mb-4" id="dashboardChart-p">
-                    최근 7일간 수집한 총 ? 개의 데이터를 수집하였습니다.
-                  </p>
-                  <canvas id="dashboardChart1" style="height: 250px"></canvas>
+                </div>
+              </div>
+              <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                  <!-- <div class="p-4 border-bottom bg-light">
+                    <h4 class="card-title mb-0">일별 수집 데이터</h4>
+                  </div> -->
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-items-center pb-4"
+                    >
+                      <h4 class="card-title mb-0">위성 지도</h4>
+                    </div>
+                    
+                    <!-- 위성 지도 코드 -->
+
+                  </div>
                 </div>
               </div>
             </div>
+
             <div class="row">
               <div class="col-lg-6 grid-margin stretch-card">
                 <div class="card">
