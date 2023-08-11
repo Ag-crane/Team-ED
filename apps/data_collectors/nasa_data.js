@@ -25,6 +25,9 @@ const mysqlConfig = {
 
 let connection;
 
+let totalUpdatedCount = 0;
+let totalNewCount = 0;
+
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -60,80 +63,6 @@ async function getTotalCount() {
   });
 }
 
-async function fetchTLE() {
-  try {
-    let page = 1;
-    let hasNextPage = true;
-    let pageCounter = 0;
-    let firstFetchTime = null;
-
-    while (hasNextPage) {
-      pageCounter++;
-
-      const response = await axios.get(`${apiUrl}&page=${page}`);
-      const tleData = response.data;
-
-      if (!tleData.member || tleData.member.length === 0) {
-        hasNextPage = false;
-        console.log("No more data found in API response.");
-        break;
-      }
-
-      if (page === 1) {
-        firstFetchTime = new Date();
-      }
-
-      if (page % 10 === 0) {
-        console.log(`Processing page ${page}`);
-      }
-
-      const extractedTLEData = processTLEData(tleData.member, firstFetchTime);
-
-      if (extractedTLEData.length > 0) {
-        await saveTLEData(extractedTLEData, firstFetchTime);
-      } else {
-        console.error("Processed TLE data is empty or invalid.");
-      }
-
-      await sleep(1000);
-
-      page++;
-
-      if (pageCounter === 100) {
-        console.log(`Wait...`);
-        await sleep(15 * 60 * 1000); // 100페이지마다 15분 대기
-        pageCounter = 0;
-      }
-    }
-
-    if (firstFetchTime) {
-      const updatedCount = totalExtractedCount;
-      const newCount = totalNewCount;
-      const totalCount = await getTotalCount();
-      saveTLEInfo(updatedCount, newCount, totalCount, firstFetchTime.toISOString().slice(0, 19).replace("T", " "));
-    }
-  } catch (error) {
-    console.error("Error fetching or saving TLE data:", error);
-    console.log("Retrying in 1 hour...");
-
-    if (connection && !connection._closed) {
-      connection.end();
-    }
-
-    await sleep(60 * 60 * 1000);
-
-    connection = mysql.createConnection(mysqlConfig);
-    connection.connect((error) => {
-      if (error) {
-        console.error("Error connecting to the database:", error);
-      } else {
-        console.log("Reconnected to the MySQL database.");
-        fetchTLE();
-      }
-    });
-  }
-}
-
 function calculateSatellitePosition(line1, line2, date) {
   const satrec = satellite.twoline2satrec(line1, line2);
 
@@ -164,6 +93,7 @@ function processTLEData(tleData, fetchTime) {
         satelliteNumber: line1.substr(2, 5),
         classification: line1.substr(7, 1),
         launch: line1.substr(9, 5),
+        firstLaunch: line1.substr(9, 2),
         launchPiece: line1.substr(14, 1),
         epoch: line1.substr(18, 14),
         firstTimeDerivative: line1.substr(33, 10),
@@ -213,7 +143,7 @@ function saveTLEData(tleData, fetchTime) {
   const queryUpdate = "UPDATE tle_data SET ? WHERE satellite_id = ?";
   const queryInsert = "INSERT INTO tle_data SET ?";
   const queryInsertLog =
-    "INSERT INTO tle_data_log (satellite_id, name, date, satellite_number, classification, launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion, fetch_timestamp, changed_time, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "INSERT INTO tle_data_log (satellite_id, name, date, satellite_number, classification, launch, first_launch, launch_piece, epoch, first_time_derivative, second_time_derivative, bstar_drag_term, ephemeris_type, element_number, checksum, inclination, right_ascension, eccentricity, argument_of_perigee, mean_anomaly, mean_motion, fetch_timestamp, changed_time, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   tleData.forEach((tle) => {
     const satellite_id = tle.satellite_id;
@@ -223,6 +153,7 @@ function saveTLEData(tleData, fetchTime) {
     const line2Fields = tle.line2Fields;
     const latitude = tle.latitude;
     const longitude = tle.longitude;
+    const first_launch = line1Fields.firstLaunch;
 
     const changed_time = new Date()
       .toISOString()
@@ -244,6 +175,7 @@ function saveTLEData(tleData, fetchTime) {
                 satellite_number: line1Fields.satelliteNumber,
                 classification: line1Fields.classification,
                 launch: line1Fields.launch,
+                first_launch,
                 launch_piece: line1Fields.launchPiece,
                 epoch: line1Fields.epoch,
                 first_time_derivative: line1Fields.firstTimeDerivative,
@@ -253,13 +185,9 @@ function saveTLEData(tleData, fetchTime) {
                 element_number: line1Fields.elementNumber,
                 checksum: line1Fields.checksum,
                 inclination: line2Fields ? line2Fields.inclination : null,
-                right_ascension: line2Fields
-                  ? line2Fields.rightAscension
-                  : null,
+                right_ascension: line2Fields ? line2Fields.rightAscension : null,
                 eccentricity: line2Fields ? line2Fields.eccentricity : null,
-                argument_of_perigee: line2Fields
-                  ? line2Fields.argumentOfPerigee
-                  : null,
+                argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
                 mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
                 mean_motion: line2Fields ? line2Fields.meanMotion : null,
                 fetch_timestamp: fetchTime,
@@ -285,6 +213,7 @@ function saveTLEData(tleData, fetchTime) {
                 line1Fields.satelliteNumber,
                 line1Fields.classification,
                 line1Fields.launch,
+                first_launch,
                 line1Fields.launchPiece,
                 line1Fields.epoch,
                 line1Fields.firstTimeDerivative,
@@ -306,10 +235,7 @@ function saveTLEData(tleData, fetchTime) {
               ],
               (error, results) => {
                 if (error) {
-                  console.error(
-                    "Error saving TLE data to tle_data_log:",
-                    error
-                  );
+                  console.error("Error saving TLE data to tle_data_log:", error);
                 } else {
                   //console.log("TLE data saved to tle_data_log successfully for:",name);
                 }
@@ -323,6 +249,7 @@ function saveTLEData(tleData, fetchTime) {
               satellite_number: line1Fields.satelliteNumber,
               classification: line1Fields.classification,
               launch: line1Fields.launch,
+              first_launch,
               launch_piece: line1Fields.launchPiece,
               epoch: line1Fields.epoch,
               first_time_derivative: line1Fields.firstTimeDerivative,
@@ -334,9 +261,7 @@ function saveTLEData(tleData, fetchTime) {
               inclination: line2Fields ? line2Fields.inclination : null,
               right_ascension: line2Fields ? line2Fields.rightAscension : null,
               eccentricity: line2Fields ? line2Fields.eccentricity : null,
-              argument_of_perigee: line2Fields
-                ? line2Fields.argumentOfPerigee
-                : null,
+              argument_of_perigee: line2Fields ? line2Fields.argumentOfPerigee : null,
               mean_anomaly: line2Fields ? line2Fields.meanAnomaly : null,
               mean_motion: line2Fields ? line2Fields.meanMotion : null,
               fetch_timestamp: fetchTime,
@@ -370,6 +295,7 @@ function saveTLEData(tleData, fetchTime) {
                   line1Fields.satelliteNumber,
                   line1Fields.classification,
                   line1Fields.launch,
+                  first_launch,
                   line1Fields.launchPiece,
                   line1Fields.epoch,
                   line1Fields.firstTimeDerivative,
@@ -405,6 +331,82 @@ function saveTLEData(tleData, fetchTime) {
       });
     }
   });
+}
+
+async function fetchTLE() {
+  try {
+    let page = 1;
+    let hasNextPage = true;
+    let pageCounter = 0;
+
+    const fetchTime = new Date();
+    const formattedFetchTime = fetchTime.toISOString().slice(0, 19).replace("T", " ");
+
+    while (hasNextPage) {
+      pageCounter++;
+
+      const response = await axios.get(`${apiUrl}&page=${page}`);
+      const tleData = response.data;
+
+      if (!tleData.member || tleData.member.length === 0) {
+        hasNextPage = false;
+        console.log("No more data found in API response.");
+        break;
+      }
+
+      if (page % 10 === 0) {
+        console.log(`Processing page ${page}`);
+      }
+
+      const extractedTLEData = processTLEData(tleData.member, formattedFetchTime);
+
+      const updatedCount = extractedTLEData.length;
+      const newCount = extractedTLEData.filter(entry => entry.isNew).length;
+
+      totalUpdatedCount += updatedCount;
+      totalNewCount += newCount;
+
+      if (extractedTLEData.length > 0) {
+        await saveTLEData(extractedTLEData, formattedFetchTime);
+
+      } else {
+        console.error("Processed TLE data is empty or invalid.");
+      }
+
+      await sleep(1000);
+
+      page++;
+
+      if (pageCounter === 100) {
+        console.log(`Wait...`);
+        await sleep(15 * 60 * 1000); // 100페이지마다 15분 대기
+        pageCounter = 0;
+      }
+    }
+    
+    const totalCount = await getTotalCount(); 
+    saveTLEInfo(totalUpdatedCount, totalNewCount, totalCount, formattedFetchTime);
+
+  } catch (error) {
+    console.error("Error fetching or saving TLE data:", error);
+    console.log("Retrying in 1 hour...");
+
+    if (connection && !connection._closed) {
+      connection.end();
+    }
+
+    await sleep(60 * 60 * 1000);
+
+    connection = mysql.createConnection(mysqlConfig);
+    connection.connect((error) => {
+      if (error) {
+        console.error("Error connecting to the database:", error);
+      } else {
+        console.log("Reconnected to the MySQL database.");
+        fetchTLE();
+      }
+    });
+  }
 }
 
 async function run() {
