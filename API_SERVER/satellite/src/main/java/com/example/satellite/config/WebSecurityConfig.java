@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class) // 필터 추가
                 .authorizeRequests()
-                    .antMatchers("/", "/user", "/login", "/error", "/data", "/data/recent", "/data/page/timestamp/**", "/data/dashboard", "/data/page/**", "/api/token").permitAll()
+                    .antMatchers("/", "/user", "/login", "/error", "/data", "/data/recent", "/data/page/timestamp/**", "/data/dashboard", "/data/page/**", "/api/token", "/data/search/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .logout()

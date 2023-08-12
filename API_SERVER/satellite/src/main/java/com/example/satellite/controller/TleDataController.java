@@ -5,16 +5,15 @@ import com.example.satellite.dto.RecentSatelliteDto;
 import com.example.satellite.dto.SatelliteDashboardDto;
 import com.example.satellite.repository.TleDataRepository;
 import com.example.satellite.service.TleDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/data")
 public class TleDataController {
@@ -58,5 +57,12 @@ public class TleDataController {
     @GetMapping("/test")
     public String test(){
         return "test";
+    }
+
+    @GetMapping("/search")
+    public List<TleData> getTleDataBySatelliteName(@RequestParam String satelliteName) {
+        log.info("satelliteName: {}", satelliteName);
+        System.out.println("satelliteName: " + satelliteName);
+        return service.getSearchedTleData(satelliteName);
     }
 }

@@ -64,4 +64,7 @@ public class TleDataService {
         return this.repository.findAllByOrderByFetchTimestampDesc(pageable);
     }
 
+    public List<TleData> getSearchedTleData(String satelliteName) {
+        return repository.findByName(satelliteName);
+    }
 }
