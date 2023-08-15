@@ -1,36 +1,3 @@
-var searchType = "name"; // 기본 검색 유형 설정
-
-function setSearchType(type) {
-  searchType = type;
-  updatePlaceholder();
-}
-
-function updatePlaceholder() {
-  var placeholderText = searchType === "name" ? "위성 이름" : "위성 번호";
-  document.getElementById("satelliteValue").placeholder = placeholderText;
-}
-
-function sendSearchData() {
-  var satelliteValue = document.getElementById("satelliteValue").value;
-  var url = "https://your-server.com/search";
-
-  var params = searchType + "=" + encodeURIComponent(satelliteValue);
-
-  fetch(url + "?" + params)
-    .then(response => response.json())
-    .then(data => {
-      alert("위성 검색이 완료되었습니다.");
-    })
-    .catch(error => {
-      console.error("An error occurred:", error);
-      alert("위성 검색에 실패했습니다. 다시 시도해주세요.");
-    });
-}
-
-// 페이지 로드 시 초기 placeholder 설정
-updatePlaceholder();
-
-
 let currentPage = 1;
 let startPage = 1;
 let endPage = 10;

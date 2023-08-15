@@ -50,6 +50,43 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">데이터 목록</h4>
+                  <!-- 검색 -->
+                  <div class="col-lg-6 input-group mb-3">
+                    <div class="input-group-prepend">
+                      <button
+                        class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                      >
+                        선택하세요
+                      </button>
+                      <div class="dropdown-menu">
+                        <a
+                          class="dropdown-item"
+                          onclick="setSearchType('name');"
+                          >위성 이름</a
+                        >
+                        <a
+                          class="dropdown-item"
+                          onclick="setSearchType('id');"
+                          >위성 번호</a
+                        >
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="satelliteValue"
+                      placeholder="위성 이름 또는 번호"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      onclick="sendSearchData()"
+                    >
+                      검색
+                    </button>
+                  </div>
                   <table class="table table-hover table-bordered text-center">
                     <thead>
                       <tr>
