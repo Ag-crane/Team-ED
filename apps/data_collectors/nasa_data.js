@@ -39,7 +39,7 @@ function saveTLEInfo(updatedCount, newCount, totalCount, fetchTime) {
     if (error) {
       console.error("Error saving TLE info:", error);
     } else {
-      console.log("TLE info saved successfully.");
+      //console.log("TLE info saved successfully.");
     }
   });
 }
@@ -411,8 +411,16 @@ async function fetchTLE() {
 
 async function run() {
   while (true) {
+    totalUpdatedCount = 0;
     console.log("Fetching TLE data from API...");
-    await fetchTLE();
+    try {
+      await fetchTLE();
+      const totalCount = await getTotalCount();
+      const fetchTime = new Date().toISOString().slice(0, 19).replace("T", " ");
+      saveTLEInfo(totalUpdatedCount, totalNewCount, totalCount, fetchTime);
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
     await sleep(120 * 60 * 1000); // 120분마다 갱신
   }
 }

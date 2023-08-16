@@ -42,6 +42,14 @@
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <!-- custom js -->
     <script src="../assets/js/custom/removeAd.js"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" /> 
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+    <!-- Leaflet.markercluster JavaScript -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
   </head>
   <body>
     <div class="container-scroller">
@@ -101,14 +109,13 @@
                     <h4 class="card-title mb-0">일별 수집 데이터</h4>
                   </div> -->
                   <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between align-items-center pb-4"
-                    >
+                    <div class="d-flex justify-content-between align-items-center pb-4">
                       <h4 class="card-title mb-0">위성 지도</h4>
                     </div>
-                    
-                    <!-- 위성 지도 코드 -->
-
+                  
+                    <div id="map" style="width: 100%; height: 300px;"></div>
+                    <script src="../assets/js/custom/satellitemap.js"></script>
+                  
                   </div>
                 </div>
               </div>
