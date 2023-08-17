@@ -32,6 +32,7 @@ public class TleDataController {
 
     @GetMapping
     public List<TleData> getAllTleData() {
+
         return repository.findAll();
     }
 
