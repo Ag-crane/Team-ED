@@ -65,7 +65,13 @@ public class TleDataController {
 
     @GetMapping("/search")
     public List<TleData> getTleDataBySatelliteName(@RequestParam String name) {
+        log.info("name: {}", name);
         return service.getSearchedTleData(name);
+    }
+
+    @GetMapping("/search/{satelliteId}")
+    public List<TleData> getTleDataBySatelliteName(@PathVariable long satelliteId) {
+        return service.getSearchedTleDataById(satelliteId);
     }
 
     @PutMapping("/{id}")

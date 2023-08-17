@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.example.satellite.repository.TleDataRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,5 +84,10 @@ public class TleDataService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TleData not found");
         }
+    }
+
+    public List<TleData> getSearchedTleDataById(long satelliteId) {
+        Optional<TleData> optionalTleData = repository.findById(satelliteId);
+        return optionalTleData.map(Collections::singletonList).orElse(Collections.emptyList());
     }
 }
