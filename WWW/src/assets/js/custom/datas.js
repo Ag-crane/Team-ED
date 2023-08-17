@@ -9,64 +9,76 @@ function fetchData () {
     .then(data => {
       document.getElementById('data-list-table').innerHTML = ''
       data.content.forEach((item, index) => {
-        document.getElementById("data-list-table").innerHTML += `
-                <tr>
-                  <td>${index + 1}</td>
-                  <td>${item.satelliteId}</td>
-                  <td>${item.name}</td>
-                  <td><label class="badge badge-danger">${
-                    item.classification
-                  }</label></td>
-                  <td>${item.launch.slice(0, 2)}</td>
-                  <td>${item.date.slice(0, 10)}</td>
-                </tr>
-              `;
-      });
-      updatePagination(pageNumber, data.totalPages);
+        const row = document.createElement('tr')
+        row.addEventListener('click', () => openModal(item))
+
+        row.innerHTML = `<td>${index + 1}</td>
+        <td>${item.satelliteId}</td>
+        <td>${item.name}</td>
+        <td><label class="badge badge-danger">${
+          item.classification
+        }</label></td>
+        <td>${item.launch.slice(0, 2)}</td>
+        <td>${item.date.slice(0, 10)}</td>
+        `
+
+        document.getElementById('data-list-table').appendChild(row)
+      })
+    })
+    .catch(error => {
+      console.error('Error:', error)
     })
 }
 
-function updatePagination(currentPage, totalPages) {
-  const pagination = document.querySelector(".pagination");
-  pagination.innerHTML = `
-        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
-            <a class="page-link" href="#">&laquo;</a>
-        </li>
-    `;
+function openModal (item) {
 
-  // Next 눌러서 페이지가 넘어갔을 때 startPage, endPage 값 변경
-  if (currentPage > endPage) {
-    startPage = currentPage;
-    endPage = startPage + perPage - 1;
-  }
-  // Previous 눌러서 페이지가 넘어갔을 때 startPage, endPage 값 변경
-  if (currentPage < startPage) {
-    startPage = currentPage - perPage + 1;
-    endPage = currentPage;
-  }
-  // 마지막 Pagination
-  if (endPage > totalPages) {
-    startPage = currentPage;
-    endPage = totalPages;
-  }
+  const modalContainer = document.getElementById('modal-container')
+  modalContainer.innerHTML = ''
+  console.log(document.getElementById('modal-title'))
+  console.log(item.name)
 
-  for (let i = startPage; i <= endPage; i++) {
-    pagination.innerHTML += `
-            <li class="page-item ${i === currentPage ? "active" : ""}">
-                <a class="page-link" href="#">${i}</a>
-            </li>
-        `;
-  }
+  // const modalTitle = document.getElementById('modal-title')
+  // modalTitle.innerHTML = item.name
+  fetch('../partials/_modal.html')
+    .then(res => res.text())
+    .then(modalContent => {
 
-  pagination.innerHTML += `
-        <li class="page-item ${
-          currentPage === totalPages ? "disabled" : ""
-        }">
-            <a class="page-link" href="#">&raquo;</a>
-        </li>
-    `;
+      modalContainer.innerHTML = modalContent
+      const modalBody = document.getElementById('modal-body')
 
-  addEventListeners();
+      document.getElementById('modal-title').innerHTML += item.name
+
+      modalBody.innerHTML = `
+      <table class="table table-striped table-bordered text-center">
+      <tbody>
+      <tr><td><strong>Satellite ID</strong></td><td>${item.satelliteId}</td></tr>
+      <tr><td><strong>Name</strong></td><td>${item.name}</td></tr>
+      <tr><td><strong>Date</strong></td><td>${item.date}</td></tr>
+      <tr><td><strong>Satellite Number</strong></td><td>${item.satelliteNumber}</td></tr>
+      <tr><td><strong>Classification</strong></td><td>${item.classification}</td></tr>
+      <tr><td><strong>Launch</strong></td><td>${item.launch}</td></tr>
+      <tr><td><strong>Launch Piece</strong></td><td>${item.launchPiece}</td></tr>
+      <tr><td><strong>Epoch</strong></td><td>${item.epoch}</td></tr>
+      <tr><td><strong>First Time Derivative</strong></td><td>${item.firstTimeDerivative}</td></tr>
+      <tr><td><strong>Second Time Derivative</strong></td><td>${item.secondTimeDerivative}</td></tr>
+      <tr><td><strong>Bstar Drag Term</strong></td><td>${item.bstarDragTerm}</td></tr>
+      <tr><td><strong>Ephemeris Type</strong></td><td>${item.ephemerisType}</td></tr>
+      <tr><td><strong>Element Number</strong></td><td>${item.elementNumber}</td></tr>
+      <tr><td><strong>Inclination</strong></td><td>${item.inclination}</td></tr>
+      <tr><td><strong>Right Ascension</strong></td><td>${item.rightAscension}</td></tr>
+      <tr><td><strong>Eccentricity</strong></td><td>${item.eccentricity}</td></tr>
+      <tr><td><strong>Argument of Perigee</strong></td><td>${item.argumentOfPerigee}</td></tr>
+      <tr><td><strong>Mean Anomaly</strong></td><td>${item.meanAnomaly}</td></tr>
+      <tr><td><strong>Mean Motion</strong></td><td>${item.meanMotion}</td></tr>
+      <tr><td><strong>Fetch Timestamp</strong></td><td>${item.fetchTimestamp}</td></tr>
+      </tbody>
+      </table>
+      `
+      $('#modal').modal('show')
+    })
+    .catch(error => {
+      console.error('Error fetching modal:', error)
+    })
 }
 
 fetchData()
