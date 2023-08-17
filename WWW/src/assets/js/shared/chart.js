@@ -14,7 +14,7 @@ $(function () {
 
     // data fetch
     async function fetchData () {
-      const response = await fetch('http://3.34.129.187:8080/data')
+      const response = await fetch(serverUrl+'/data')  
       const data = await response.json()
       return data
     }

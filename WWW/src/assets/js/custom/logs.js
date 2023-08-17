@@ -1,12 +1,10 @@
-import serverUrl from "./module";
-
 let currentPage = 1;
 let startPage = 1;
 let endPage = 10;
 let perPage = 10; // Pagination 한 번에 보여줄 페이지 수
 const token = localStorage.getItem("token"); // 토큰을 가져옴
 function fetchData(pageNumber) {
-  fetch(`http://3.34.129.187:8080/data/page/timestamp/${pageNumber}`, {
+  fetch(serverUrl+`/data/page/timestamp/${pageNumber}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

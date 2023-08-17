@@ -7,6 +7,7 @@ var dangerColor = getComputedStyle(document.body).getPropertyValue('--danger');
 var infoColor = getComputedStyle(document.body).getPropertyValue('--info');
 var darkColor = getComputedStyle(document.body).getPropertyValue('--dark');
 var lightColor = getComputedStyle(document.body).getPropertyValue('--light');
+var serverUrl = "http://team-ed-main.data.xehub.co.kr:8080";
 (function ($) {
   'use strict';
   $(function () {
