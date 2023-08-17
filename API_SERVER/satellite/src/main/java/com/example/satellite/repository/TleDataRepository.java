@@ -19,5 +19,8 @@ public interface TleDataRepository extends JpaRepository<TleData, Long> {
 
     List<TleData> findByName(String satelliteName);
 
+    // 이름에 주어진 문자열이 포함된 모든 데이터를 검색
+    List<TleData> findByNameContaining(String satelliteName);
+
     Optional<TleData> findBySatelliteId(String satelliteId);
 }

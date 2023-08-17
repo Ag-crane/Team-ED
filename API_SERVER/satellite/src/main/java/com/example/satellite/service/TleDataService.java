@@ -70,7 +70,7 @@ public class TleDataService {
     }
 
     public List<TleData> getSearchedTleData(String satelliteName) {
-        return repository.findByName(satelliteName);
+        return repository.findByNameContaining(satelliteName);
     }
 
     public TleData updateTleData(int id, UpdateTleDataDto updateTleDataDto) {
