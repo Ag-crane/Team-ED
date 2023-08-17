@@ -11,7 +11,7 @@ const totalPages = 867; // 총 페이지 수
 
       for (let page = 1; page <= totalPages; page++) {
         fetchPromises.push(
-          fetch(`http://3.34.129.187:8080/data/page/${page}`).then(
+          fetch(serverUrl+`/data/page/${page}`).then(
             (response) => response.json()
           )
         );

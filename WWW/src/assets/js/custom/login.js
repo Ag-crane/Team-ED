@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     console.log(jsonData)
 
     // 서버에 POST 요청 전송
-    fetch('http://3.34.129.187:8080/login', {
+    fetch(serverUrl+'/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
