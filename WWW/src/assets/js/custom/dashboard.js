@@ -1,3 +1,5 @@
+import serverUrl from "./module";
+
 fetch("http://3.34.129.187:8080/data/page/timestamp/1")
 .then((res) => {
   if (!res.ok) {

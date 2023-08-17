@@ -1,3 +1,5 @@
+import serverUrl from "./module";
+
 let currentPage = 1;
 let startPage = 1;
 let endPage = 10;
