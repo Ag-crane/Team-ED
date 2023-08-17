@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TleDataRepository extends JpaRepository<TleData, Long> {
@@ -17,4 +18,6 @@ public interface TleDataRepository extends JpaRepository<TleData, Long> {
     Page<TleData> findAllByOrderByFetchTimestampDesc(Pageable pageable);
 
     List<TleData> findByName(String satelliteName);
+
+    Optional<TleData> findBySatelliteId(String satelliteId);
 }

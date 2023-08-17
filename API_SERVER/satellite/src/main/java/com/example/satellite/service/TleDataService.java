@@ -86,8 +86,8 @@ public class TleDataService {
         }
     }
 
-    public List<TleData> getSearchedTleDataById(long satelliteId) {
-        Optional<TleData> optionalTleData = repository.findById(satelliteId);
+    public List<TleData> getSearchedTleDataBySatelliteId(String satelliteId) {
+        Optional<TleData> optionalTleData = repository.findBySatelliteId(satelliteId);
         return optionalTleData.map(Collections::singletonList).orElse(Collections.emptyList());
     }
 }
