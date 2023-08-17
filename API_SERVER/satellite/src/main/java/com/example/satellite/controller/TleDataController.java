@@ -3,12 +3,15 @@ package com.example.satellite.controller;
 import com.example.satellite.domain.TleData;
 import com.example.satellite.dto.RecentSatelliteDto;
 import com.example.satellite.dto.SatelliteDashboardDto;
+import com.example.satellite.dto.UpdateTleDataDto;
 import com.example.satellite.repository.TleDataRepository;
 import com.example.satellite.service.TleDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,4 +68,10 @@ public class TleDataController {
         System.out.println("satelliteName: " + satelliteName);
         return service.getSearchedTleData(satelliteName);
     }
+
+    @PutMapping("/{id}")
+    public TleData updateTleData(@PathVariable int id, @RequestBody UpdateTleDataDto tleData) {
+        return service.updateTleData(id, tleData);
+    }
+
 }
