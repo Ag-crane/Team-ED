@@ -12,10 +12,14 @@ function updatePlaceholder () {
 }
 
 function sendSearchData () {
+  
   var satelliteValue = document.getElementById('satelliteValue').value
-
-  var params = searchType + '=' + encodeURIComponent(satelliteValue)
-  var url = serverUrl + '/data/search?' + params
+  var url=''
+  if (searchType === 'name') {
+    url = serverUrl + '/data/search?name=' + encodeURIComponent(satelliteValue)
+  } else if (searchType === 'id') {
+    url = serverUrl + '/data/search/satellite-id?satelliteId=' + encodeURIComponent(satelliteValue)
+  }
   alert(url)
   fetch(url, {
     method: 'GET',
