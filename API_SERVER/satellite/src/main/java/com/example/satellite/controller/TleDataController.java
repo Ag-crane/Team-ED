@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -64,13 +63,17 @@ public class TleDataController {
     }
 
     @GetMapping("/search")
-    public List<TleData> getTleDataBySatelliteName(@RequestParam String satelliteName) {
-        log.info("satelliteName: {}", satelliteName);
-        System.out.println("satelliteName: " + satelliteName);
-        return service.getSearchedTleData(satelliteName);
+    public List<TleData> getTleDataBySatelliteName(@RequestParam String name) {
+        log.info("name: {}", name);
+        return service.getSearchedTleData(name);
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/search/satellite-id")
+    public List<TleData> getTleDataBySatelliteId(@RequestParam String satelliteId) {
+        return service.getSearchedTleDataBySatelliteId(satelliteId);
+    }
+
+    @PutMapping("/{satelliteId}")
     public TleData updateTleData(@PathVariable int id, @RequestBody UpdateTleDataDto tleData) {
         return service.updateTleData(id, tleData);
     }
