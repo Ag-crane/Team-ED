@@ -1,5 +1,6 @@
 package com.example.satellite.controller;
 
+import com.example.satellite.dto.FetchData2Dto;
 import com.example.satellite.dto.FetchDataDto;
 import com.example.satellite.service.TleDataLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,10 @@ public class TleDataLogController {
     @GetMapping("/fetch-data")
     public List<FetchDataDto> getFetchDataAfterDate() {
         return tleDataLogService.getFetchDataAfterDate();
+    }
+
+    @GetMapping("/unique-satellite-count")
+    public List<FetchData2Dto> getDistinctSatelliteIdCountsForPastWeek() {
+        return tleDataLogService.getDistinctSatelliteIdCountsForPastWeek();
     }
 }
