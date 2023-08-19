@@ -20,7 +20,6 @@ function sendSearchData () {
   } else if (searchType === 'id') {
     url = serverUrl + '/data/search/satellite-id?satelliteId=' + encodeURIComponent(satelliteValue)
   }
-  alert(url)
   fetch(url, {
     method: 'GET',
     headers: {
@@ -48,6 +47,7 @@ function sendSearchData () {
                 </tr>
               `
       })
+      document.getElementById('pagination').innerHTML = '' // Clear existing pagination
     })
     .catch(error => {
       alert('검색에 실패하였습니다.\n' + error)
