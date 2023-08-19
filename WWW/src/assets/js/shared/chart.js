@@ -4,52 +4,38 @@ $(function () {
   // dashboard
   if ($('#dashboardChart1').length) {
 
-    // labels : 최근 7일 날짜
-    const labels = []
-    for (let i = 7; i >= 1; i--) {
-      const d = new Date()
-      d.setDate(d.getDate() - i)
-      labels.push(d.toISOString().slice(0, 10))
-    }
-
     // data fetch
     async function fetchData () {
-      const response = await fetch(serverUrl+'/data')  
+      const response = await fetch(serverUrl+'/tle-data-log/unique-satellite-count')
       const data = await response.json()
       return data
     }
 
     async function drawChart () {
       const data = await fetchData()
+      const fetchDate = data.map(d => d.fetchDate)
+      const fetchCount = data.map(d => d.fetchCount)
 
-      // countData : labels의 각 날짜에 해당하는 데이터의 개수
-      let countData = labels.map(
-        label => data.filter(d => d.date.slice(0, 10) === label).length
-      )
-
-      countData = labels.map(
-        label => data.filter(d => d.date.slice(0, 10) === label).length
-      )
       // 합계 구하고 출력
-      const sum = countData.reduce((a, b) => a + b, 0)
+      const sum = fetchCount.reduce((a, b) => a + b, 0)
       document.getElementById(
         'dashboardChart-p'
       ).innerHTML = `최근 7일간 수집한 총 ${sum} 개의 데이터를 수집하였습니다`
       
       // 데이터 개수에 따른 y축 최대값 설정
-      const max = Math.max(...countData)
-      const maxRound = Math.ceil(max / 1000) * 1000
+      const max = Math.max(...fetchCount)
+      const maxRound = Math.ceil(max / 1000) * 1500
 
       // 차트
       var dashboardChart1Canvas = $('#dashboardChart1').get(0).getContext('2d')
       var dashboardChart1 = new Chart(dashboardChart1Canvas, {
         type: 'bar',
         data: {
-          labels: labels,
+          labels: fetchDate,
           datasets: [
             {
               label: 'data',
-              data: countData,
+              data: fetchCount,
               backgroundColor: ChartColor[0],
               borderColor: ChartColor[0],
               borderWidth: 0
@@ -109,7 +95,7 @@ $(function () {
                   autoSkip: false,
                   maxRotation: 0,
                   fontColor: '#bfccda',
-                  stepSize: 1000,
+                  stepSize: 2000,
                   min: 0,
                   max: maxRound,
                 },
