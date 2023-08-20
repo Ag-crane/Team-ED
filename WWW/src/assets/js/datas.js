@@ -32,15 +32,16 @@ function sendSearchData () {
       data.forEach((item, index) => {
         document.getElementById('data-list-table').innerHTML += `
                 <tr>
-                  <td>${index + 1}</td>
-                  <td>${item.satelliteId}</td>
-                  <td>${item.name}</td>
-                  <td><label class="badge badge-danger">${
-                    item.classification
-                  }</label></td>
-                  <td>${item.launch.slice(0, 2)}</td>
-                  <td>${item.date.slice(0, 10)}
-                      ${item.date.slice(11, 19)}</td>
+                <td>${index + 1}</td>
+                <td>${item.satelliteId}</td>
+                <td>${item.name}</td>
+                <td>${item.info === null ? '-' : item.info}</td>
+                <td><label class="badge badge-danger">${
+                  item.classification
+                }</label></td>
+                <td>${item.latitude.toFixed(6)}</td> 
+                <td>${item.longitude.toFixed(6)}</td>
+                <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
                 </tr>
               `
       })
@@ -78,17 +79,17 @@ function fetchData (pageNumber) {
       data.content.forEach((item, index) => {
         const row = document.createElement('tr')
         row.addEventListener('click', () => openModal(item))
-
-        row.innerHTML = `<td>${index + 1}</td>
+        row.innerHTML = `
+        <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
         <td>${item.name}</td>
+        <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
         }</label></td>
-        <td>${item.latitude}</td>
-        <td>${item.longitude}</td>
-        <td>${item.date.slice(0, 10)}
-            ${item.date.slice(11, 19)}</td>
+        <td>${item.latitude.toFixed(6)}</td> 
+        <td>${item.longitude.toFixed(6)}</td>
+        <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
         `
 
         document.getElementById('data-list-table').appendChild(row)
@@ -200,6 +201,8 @@ function openModal (item) {
       <tr><td><strong>Mean Anomaly</strong></td><td>${item.meanAnomaly}</td></tr>
       <tr><td><strong>Mean Motion</strong></td><td>${item.meanMotion}</td></tr>
       <tr><td><strong>Fetch Timestamp</strong></td><td>${item.fetchTimestamp}</td></tr>
+      <tr><td><strong>Latitude</strong></td><td>${item.latitude}</td></tr>
+      <tr><td><strong>Longitude</strong></td><td>${item.longitude}</td></tr>
       </tbody>
       </table>
       `
