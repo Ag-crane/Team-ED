@@ -39,7 +39,8 @@ function sendSearchData () {
                     item.classification
                   }</label></td>
                   <td>${item.launch.slice(0, 2)}</td>
-                  <td>${item.date.slice(0, 10)}</td>
+                  <td>${item.date.slice(0, 10)}
+                      ${item.date.slice(11, 19)}</td>
                 </tr>
               `
       })
@@ -84,8 +85,10 @@ function fetchData (pageNumber) {
         <td><label class="badge badge-danger">${
           item.classification
         }</label></td>
-        <td>${item.launch.slice(0, 2)}</td>
-        <td>${item.date.slice(0, 10)}</td>
+        <td>${item.latitude}</td>
+        <td>${item.longitude}</td>
+        <td>${item.date.slice(0, 10)}
+            ${item.date.slice(11, 19)}</td>
         `
 
         document.getElementById('data-list-table').appendChild(row)
