@@ -28,3 +28,24 @@ fetch(serverUrl+"/data/page/timestamp/1")
 .catch((error) => {
   console.error("Error:", error);
 });
+
+fetch(serverUrl+"/tle-data-info")
+.then((res) => {
+  if (!res.ok) {
+    throw new Error("Network response was not ok.");
+  }
+  return res.json();
+}).then((data) => {
+  data.slice(0,5).forEach((item, index) => {
+    document.getElementById("table2-body").innerHTML += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${item.fetchTime.slice(0,10)}
+          ${item.fetchTime.slice(11,19)}</td>
+      <td>${item.totalCount}</td>
+      <td>${item.updatedCount}</td>
+      <td>${item.newCount}</td>
+    </tr>
+  `;
+  });
+})
