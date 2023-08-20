@@ -3,12 +3,8 @@ var searchType = 'name' // 기본 검색 유형 설정
 
 function setSearchType (type) {
   searchType = type
+  document.getElementById('dropdownBtn').innerHTML = searchType === 'name' ? '위성 이름' : '위성 번호' // Clear input value
   updatePlaceholder()
-}
-
-function updatePlaceholder () {
-  var placeholderText = searchType === 'name' ? '위성 이름' : '위성 번호'
-  document.getElementById('satelliteValue').placeholder = placeholderText
 }
 
 function sendSearchData () {
@@ -53,8 +49,6 @@ function sendSearchData () {
       alert('검색에 실패하였습니다.\n' + error)
     })
 }
-
-updatePlaceholder() // 페이지 로드 시 초기 placeholder 설정
 
 // 데이터 수집
 
