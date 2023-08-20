@@ -1,3 +1,21 @@
+// 스피너
+const spinnerBox = document.getElementById('spinnerBox')
+
+function showSpinner () {
+  const spinnerHtml = `
+  <div class="d-flex"">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>`
+  spinnerBox.innerHTML = spinnerHtml
+  spinnerBox.style.display = 'flex'
+}
+
+function hideSpinner () {
+  spinnerBox.style.display = 'none'
+}
+
 // 검색
 var searchType = 'name' // 기본 검색 유형 설정
 
@@ -61,6 +79,8 @@ let perPage = 10 // Pagination 한 번에 보여줄 페이지 수
 const token = localStorage.getItem('token') // 로그인 시 저장된 토큰
 
 function fetchData (pageNumber) {
+  showSpinner()
+
   fetch(serverUrl + `/data/page/${pageNumber}`, {
     method: 'GET',
     headers: {
@@ -75,6 +95,8 @@ function fetchData (pageNumber) {
       return res.json()
     })
     .then(data => {
+      hideSpinner()
+      
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.content.forEach((item, index) => {
         const row = document.createElement('tr')

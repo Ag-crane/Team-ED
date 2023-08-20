@@ -1,9 +1,29 @@
+// 스피너
+const spinnerBox = document.getElementById('spinnerBox')
+
+function showSpinner () {
+  const spinnerHtml = `
+  <div class="d-flex"">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>`
+  spinnerBox.innerHTML = spinnerHtml
+  spinnerBox.style.display = 'flex'
+}
+
+function hideSpinner () {
+  spinnerBox.style.display = 'none'
+}
+
+
 let currentPage = 1
 let startPage = 1
 let endPage = 10
 let perPage = 10 // Pagination 한 번에 보여줄 페이지 수
 const token = localStorage.getItem('token') // 토큰을 가져옴
 function fetchData (pageNumber) {
+  showSpinner()
   fetch(serverUrl + `/data/page/timestamp/${pageNumber}`, {
     method: 'GET',
     headers: {
@@ -18,7 +38,7 @@ function fetchData (pageNumber) {
       return res.json()
     })
     .then(data => {
-      console.log(data.content)
+      hideSpinner()
       document.getElementById('data-collect-table').innerHTML = '' // Clear existing data
       data.content.forEach((item, index) => {
         document.getElementById('data-collect-table').innerHTML += `

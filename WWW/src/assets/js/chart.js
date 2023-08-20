@@ -1,15 +1,19 @@
+// 스피너
+const spinnerBox = document.getElementById('spinnerBox')
+
 function showSpinner () {
   const spinnerHtml = `
-  <div class="d-flex justify-content-center align-items-center" style="margin-top:100px; height:100px">
     <div class="spinner-border text-primary" role="status">
       <span class="sr-only">Loading...</span>
     </div>
-  </div>`
-  document.getElementById('spinnerBox').innerHTML = spinnerHtml
+  `
+  spinnerBox.innerHTML = spinnerHtml
+  spinnerBox.style.height = '200px'
+  spinnerBox.style.display = 'flex'
 }
 
 function hideSpinner () {
-  document.getElementById('spinnerBox').innerHTML = ''
+  spinnerBox.style.display = 'none'
 }
 
 // data fetch
@@ -26,7 +30,7 @@ async function drawChart () {
   showSpinner()
   const data = await fetchData()
   hideSpinner()
-  document.getElementById('dashboardChart1').style.height = '250px'
+  document.getElementById('dashboardChart').style.height = '250px'
 
   const fetchDate = data.map(d => d.fetchDate)
   const fetchCount = data.map(d => d.fetchCount)
@@ -42,8 +46,8 @@ async function drawChart () {
   const maxRound = Math.ceil(max / 1000) * 1500
 
   // 차트
-  var dashboardChart1Canvas = $('#dashboardChart1').get(0).getContext('2d')
-  var dashboardChart1 = new Chart(dashboardChart1Canvas, {
+  var dashboardChartCanvas = $('#dashboardChart').get(0).getContext('2d')
+  var dashboardChart = new Chart(dashboardChartCanvas, {
     type: 'bar',
     data: {
       labels: fetchDate,
@@ -149,7 +153,7 @@ async function drawChart () {
     }
   })
   document.getElementById('bar-traffic-legend').innerHTML =
-    dashboardChart1.generateLegend()
+    dashboardChart.generateLegend()
 }
 
 drawChart()
