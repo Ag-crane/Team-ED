@@ -26,4 +26,6 @@ public class TleDataLogController {
     public List<FetchData2Dto> getDistinctSatelliteIdCountsForPastWeek() {
         return tleDataLogService.getDistinctSatelliteIdCountsForPastWeek();
     }
+
+
 }
