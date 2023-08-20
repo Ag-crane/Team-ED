@@ -203,6 +203,7 @@ function openModal (item) {
       <tr><td><strong>Fetch Timestamp</strong></td><td>${item.fetchTimestamp}</td></tr>
       <tr><td><strong>Latitude</strong></td><td>${item.latitude}</td></tr>
       <tr><td><strong>Longitude</strong></td><td>${item.longitude}</td></tr>
+      <tr><td><strong>Country / Organization</strong></td><td>${item.info === 'null' ? '-' : item.info}</td></tr>
       </tbody>
       </table>
       `
