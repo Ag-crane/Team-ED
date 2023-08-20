@@ -30,11 +30,6 @@ function fetchData (pageNumber) {
                       ${item.date.slice(11,19)}</td>
                   <td>${item.satelliteId}</td>
                   <td>${item.name}</td>
-                  <td><label class="badge badge-danger">${
-                    item.classification
-                  }</label></td>
-                  <td>${item.launch.slice(0, 2)}</td>
-                </tr>
               `
       })
       updatePagination(pageNumber, data.totalPages)
