@@ -48,20 +48,22 @@ function sendSearchData () {
       // 검색결과 테이블에 추가
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.forEach((item, index) => {
-        document.getElementById('data-list-table').innerHTML += `
-                <tr>
-                <td>${index + 1}</td>
-                <td>${item.satelliteId}</td>
-                <td>${item.name}</td>
-                <td>${item.info === null ? '-' : item.info}</td>
-                <td><label class="badge badge-danger">${
-                  item.classification
-                }</label></td>
-                <td>${item.latitude.toFixed(6)}</td> 
-                <td>${item.longitude.toFixed(6)}</td>
-                <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
-                </tr>
-              `
+        const row = document.createElement('tr')
+        row.addEventListener('click', () => openModal(item))
+        row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.satelliteId}</td>
+        <td>${item.name}</td>
+        <td>${item.info === null ? '-' : item.info}</td>
+        <td><label class="badge badge-danger">${
+          item.classification
+        }</label></td>
+        <td>${item.latitude.toFixed(6)}</td> 
+        <td>${item.longitude.toFixed(6)}</td>
+        <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
+        `
+
+        document.getElementById('data-list-table').appendChild(row)
       })
       document.getElementById('pagination').innerHTML = '' // Clear existing pagination
     })
