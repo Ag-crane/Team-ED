@@ -8,7 +8,8 @@ document
     const formData = new FormData(this)
     const data = Object.fromEntries(formData.entries())
     const jsonData = JSON.stringify(data)
-    console.log(jsonData)
+    
+    const userEmail = data.email
 
     // 서버에 POST 요청 전송
     fetch(serverUrl + '/login', {
@@ -29,6 +30,7 @@ document
           )
           return
         } else {
+          localStorage.setItem('userEmail', userEmail) // 로컬스토리지에 이메일 저장
           localStorage.setItem('token', data.accessToken) // 로컬스토리지에 토큰 저장
           location.href = 'dashboard.html' // 메인 페이지로 이동
         }
@@ -51,7 +53,7 @@ const appendAlert = (elementId, message, type) => {
   alertPlaceholder.append(wrapper)
 }
 
-// 모달 창 띄우기
+// 회원가입 모달 창 띄우기
 function openModal () {
   const modalContainer = document.getElementById('modal-container')
   modalContainer.innerHTML = ''
