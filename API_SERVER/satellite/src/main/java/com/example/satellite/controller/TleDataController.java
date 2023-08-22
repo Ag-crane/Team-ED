@@ -74,8 +74,8 @@ public class TleDataController {
     }
 
     @PutMapping("/{satelliteId}")
-    public TleData updateTleData(@PathVariable int id, @RequestBody UpdateTleDataDto tleData) {
-        return service.updateTleData(id, tleData);
+    public TleData updateTleData(@PathVariable String satelliteId, @RequestBody UpdateTleDataDto tleData) {
+        return service.updateTleData(satelliteId, tleData);
     }
 
 }

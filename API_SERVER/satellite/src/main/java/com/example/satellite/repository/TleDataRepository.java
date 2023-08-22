@@ -23,4 +23,6 @@ public interface TleDataRepository extends JpaRepository<TleData, Long> {
     List<TleData> findByNameContaining(String satelliteName);
 
     Optional<TleData> findBySatelliteId(String satelliteId);
+
+    Optional<TleData> findById(Integer id);
 }
