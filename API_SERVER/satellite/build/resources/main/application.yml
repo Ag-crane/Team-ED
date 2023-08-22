@@ -1,0 +1,41 @@
+tle:
+  api-key: FZVfJwO7l89rRRJg67NE56mG0iat9wPEztjLkXJd
+
+server:
+#  address: localhost
+  address: 0.0.0.0
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://14.52.137.81:3306/team_ed_user3?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+#    username: satellite
+#    password: Abcd123!
+    username: team_ed
+    password: team_ed!@#123
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+jwt:
+  issuer: cro7710@gmail.com
+  secret_key: satellite-project
+
+#app:
+#  datasource2:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/root?useSSL=false&serverTimezone=UTC
+#    username: satellite
+#    password: Abcd123!
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
