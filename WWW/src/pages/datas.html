@@ -164,23 +164,12 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    
+    <!-- modal -->
     <div id="modal-container"></div>
-    <!-- partials -->
-    <script>
-      fetch("../partials/_footer.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("footer").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
 
-      fetch("../partials/_sidebar.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("sidebar").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
-    </script>
+    <!-- loader -->
+    <script src="../assets/js/loader.js"></script>
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>

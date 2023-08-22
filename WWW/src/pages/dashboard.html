@@ -151,37 +151,9 @@
     </div>
     <!-- container-scroller -->
 
-    <!-- partials -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // 로그인 체크
-        if (!localStorage.getItem("token")) {
-          alert("로그인이 필요한 서비스입니다.");
-          location.href = "../pages/login.html";
-        } else {
-          fetch("../partials/_footer.html")
-            .then((response) => response.text())
-            .then((html) => {
-              document.getElementById("footer").innerHTML = html;
-            })
-            .catch((error) => console.warn(error));
+    <!-- loader -->
+    <script src="../assets/js/loader.js"></script>
 
-          fetch("../partials/_sidebar.html")
-            .then((response) => response.text())
-            .then((html) => {
-              document.getElementById("sidebar").innerHTML = html;
-              // sidebar 내용이 추가된 로그아웃 이벤트 추가.
-              const logoutButton = document.getElementById("logoutButton");
-              logoutButton.addEventListener("click", function () {
-                localStorage.removeItem("token");
-                alert("로그아웃 되었습니다.");
-                window.location.href = "../pages/login.html";
-              });
-            })
-            .catch((error) => console.warn(error));
-        }
-      });
-    </script>
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>
