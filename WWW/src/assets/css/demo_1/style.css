@@ -378,7 +378,7 @@
 
 /* Sidebar */
 .sidebar {
-  min-height: calc(100vh - 63px);
+  min-height: 100vh;
   background: linear-gradient(to top, #5768f3, #1c45ef);
   font-family: "roboto", sans-serif;
   padding: 0;
