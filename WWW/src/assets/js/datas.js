@@ -53,7 +53,7 @@ function sendSearchData () {
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN <button type="button" id="unknown-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
+        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN <button type="button" id="update-btn" onclick="modifyName()">수정</button>' : item.name}</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
@@ -71,6 +71,55 @@ function sendSearchData () {
       alert('검색에 실패하였습니다.\n' + error)
     })
 }
+
+// 수정
+function modifyName() {
+  const unknownButton = event.target;
+  const row = unknownButton.closest('tr');
+  const nameCell = row.querySelector('td:nth-child(3)');
+
+  const newName = prompt('위성의 새로운 이름을 입력하세요:');
+  if (newName !== null) {
+    const originalButton = nameCell.querySelector('button');
+    if (originalButton) {
+      nameCell.innerHTML = newName + ' <button type="button" id="update-btn" onclick="modifyName()">수정</button>';
+    } else {
+      nameCell.innerHTML = newName;
+    }
+
+    const satelliteId = row.querySelector('td:nth-child(2)').textContent;
+    sendModifiedNameToServer(satelliteId, newName);
+
+    fetchData(currentPage);  // 수정 후 데이터 업데이트
+
+    event.stopPropagation();  // 모달 열림 방지
+  }
+}
+
+function sendModifiedNameToServer(satelliteId, newName) {
+  const data = {
+    name: newName
+  };
+
+  fetch(serverUrl + `/data/${satelliteId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+    console.log('Name modification successful');
+  })
+  .catch(error => {
+    console.error('Error sending modified name to server:', error);
+  });
+}
+
 
 // 데이터 수집
 
@@ -110,7 +159,7 @@ function fetchData (pageNumber) {
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN  <button type="button" id="unknown-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
+        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
@@ -235,7 +284,9 @@ function openModal (item) {
       </tbody>
       </table>
       `
-      $('#modal').modal('show')
+      
+      $('#modal').modal('show');
+
     })
     .catch(error => {
       console.error('Error fetching modal:', error)
