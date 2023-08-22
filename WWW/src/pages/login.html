@@ -76,7 +76,7 @@
                         id="password"
                         name="password"
                         class="form-control"
-                        placeholder="*********"
+                        placeholder="Password"
                       />
                       <div class="input-group-append">
                         <span class="input-group-text">
@@ -85,7 +85,7 @@
                       </div>
                     </div>
                   </div>
-                  <div id="liveAlertPlaceholder"></div>
+                  <div id="liveAlertPlaceholder1"></div>
                   <div class="form-group">
                     <button
                       type="submit"
@@ -119,12 +119,8 @@
                     </button>
                   </div>
                   <div class="text-block text-center my-3">
-                    <span class="text-small font-weight-semibold"
-                      >Not a member ?</span
-                    >
-                    <a href="register.html" class="text-black text-small"
-                      >Create new account</a
-                    >
+                    <span class="text-small font-weight-semibold">Not a member ?</span>
+                    <a href="javascript:void(0);" class="text-black text-small" onclick="openModal()">Create new account</a>
                   </div>
                 </form>
               </div>
@@ -159,6 +155,9 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+
+    <!-- modal -->
+    <div id="modal-container"></div>
 
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
