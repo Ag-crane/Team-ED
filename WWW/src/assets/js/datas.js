@@ -21,18 +21,21 @@ var searchType = 'name' // 기본 검색 유형 설정
 
 function setSearchType (type) {
   searchType = type
-  document.getElementById('dropdownBtn').innerHTML = searchType === 'name' ? '위성 이름' : '위성 번호' // Clear input value
+  document.getElementById('dropdownBtn').innerHTML =
+    searchType === 'name' ? '위성 이름' : '위성 번호' // Clear input value
   updatePlaceholder()
 }
 
 function sendSearchData () {
-  
   var satelliteValue = document.getElementById('satelliteValue').value
-  var url=''
+  var url = ''
   if (searchType === 'name') {
     url = serverUrl + '/data/search?name=' + encodeURIComponent(satelliteValue)
   } else if (searchType === 'id') {
-    url = serverUrl + '/data/search/satellite-id?satelliteId=' + encodeURIComponent(satelliteValue)
+    url =
+      serverUrl +
+      '/data/search/satellite-id?satelliteId=' +
+      encodeURIComponent(satelliteValue)
   }
   fetch(url, {
     method: 'GET',
@@ -48,21 +51,35 @@ function sendSearchData () {
       // 검색결과 테이블에 추가
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.forEach((item, index) => {
+        // 예외처리 : 빈 값일 경우 '-'로 표시
+        if (
+          item.launch === null ||
+          typeof item.launch !== 'string' ||
+          isNaN(parseInt(item.launch.slice(0, 2), 10))
+        ) {
+          item.launch = '-'
+        } else {
+          const launchYear = parseInt(item.launch.slice(0, 2), 10)
+          item.launch = launchYear < 23 ? `20${launchYear}` : `19${launchYear}`
+        }
         const row = document.createElement('tr')
         row.addEventListener('click', () => openModal(item))
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN <button type="button" id="update-btn" onclick="modifyName()">수정</button>' : item.name}</td>
+        <td>${
+          item.name === 'UNKNOWN'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>'
+            : item.name
+        }</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
         }</label></td>
         <td>${item.latitude.toFixed(6)}</td> 
         <td>${item.longitude.toFixed(6)}</td>
-        <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
+        <td>${item.launch}</td>
         `
-
         document.getElementById('data-list-table').appendChild(row)
       })
       document.getElementById('pagination').innerHTML = '' // Clear existing pagination
@@ -73,33 +90,35 @@ function sendSearchData () {
 }
 
 // 수정
-function modifyName() {
-  const unknownButton = event.target;
-  const row = unknownButton.closest('tr');
-  const nameCell = row.querySelector('td:nth-child(3)');
+function modifyName () {
+  const unknownButton = event.target
+  const row = unknownButton.closest('tr')
+  const nameCell = row.querySelector('td:nth-child(3)')
 
-  const newName = prompt('위성의 새로운 이름을 입력하세요:');
+  const newName = prompt('위성의 새로운 이름을 입력하세요:')
   if (newName !== null) {
-    const originalButton = nameCell.querySelector('button');
+    const originalButton = nameCell.querySelector('button')
     if (originalButton) {
-      nameCell.innerHTML = newName + ' <button type="button" id="update-btn" onclick="modifyName()">수정</button>';
+      nameCell.innerHTML =
+        newName +
+        ' <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
     } else {
-      nameCell.innerHTML = newName;
+      nameCell.innerHTML = newName
     }
 
-    const satelliteId = row.querySelector('td:nth-child(2)').textContent;
-    sendModifiedNameToServer(satelliteId, newName);
+    const satelliteId = row.querySelector('td:nth-child(2)').textContent
+    sendModifiedNameToServer(satelliteId, newName)
 
-    fetchData(currentPage);  // 수정 후 데이터 업데이트
+    fetchData(currentPage) // 수정 후 데이터 업데이트
 
-    event.stopPropagation();  // 모달 열림 방지
+    event.stopPropagation() // 모달 열림 방지
   }
 }
 
-function sendModifiedNameToServer(satelliteId, newName) {
+function sendModifiedNameToServer (satelliteId, newName) {
   const data = {
     name: newName
-  };
+  }
 
   fetch(serverUrl + `/data/${satelliteId}`, {
     method: 'PUT',
@@ -109,17 +128,16 @@ function sendModifiedNameToServer(satelliteId, newName) {
     },
     body: JSON.stringify(data)
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok.');
-    }
-    console.log('Name modification successful');
-  })
-  .catch(error => {
-    console.error('Error sending modified name to server:', error);
-  });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok.')
+      }
+      console.log('Name modification successful')
+    })
+    .catch(error => {
+      console.error('Error sending modified name to server:', error)
+    })
 }
-
 
 // 데이터 수집
 
@@ -146,27 +164,38 @@ function fetchData (pageNumber) {
       return res.json()
     })
     .then(data => {
-
-
       hideSpinner()
-      
+
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.content.forEach((item, index) => {
-        
-
+        // 예외처리 : 빈 값일 경우 '-'로 표시
+        if (
+          item.launch === null ||
+          typeof item.launch !== 'string' ||
+          isNaN(parseInt(item.launch.slice(0, 2), 10))
+        ) {
+          item.launch = '-'
+        } else {
+          const launchYear = parseInt(item.launch.slice(0, 2), 10)
+          item.launch = launchYear < 23 ? `20${launchYear}` : `19${launchYear}`
+        }
         const row = document.createElement('tr')
         row.addEventListener('click', () => openModal(item))
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
+        <td>${
+          item.name === 'UNKNOWN'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>'
+            : item.name
+        }</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
         }</label></td>
         <td>${item.latitude.toFixed(6)}</td> 
         <td>${item.longitude.toFixed(6)}</td>
-        <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
+        <td>${item.launch}</td>
         `
 
         document.getElementById('data-list-table').appendChild(row)
@@ -240,13 +269,10 @@ function addEventListeners () {
 
 // 모달 창 띄우기
 function openModal (item) {
+  console.log(item)
   const modalContainer = document.getElementById('modal-container')
   modalContainer.innerHTML = ''
-  console.log(document.getElementById('modal-title'))
-  console.log(item.name)
 
-  // const modalTitle = document.getElementById('modal-title')
-  // modalTitle.innerHTML = item.name
   fetch('../partials/_modal.html')
     .then(res => res.text())
     .then(modalContent => {
@@ -258,35 +284,64 @@ function openModal (item) {
       modalBody.innerHTML = `
       <table class="table table-striped table-bordered text-center">
       <tbody>
-      <tr><td><strong>Satellite ID</strong></td><td>${item.satelliteId}</td></tr>
+      <tr><td><strong>Satellite ID</strong></td><td>${
+        item.satelliteId
+      }</td></tr>
       <tr><td><strong>Name</strong></td><td>${item.name}</td></tr>
       <tr><td><strong>Date</strong></td><td>${item.date}</td></tr>
-      <tr><td><strong>Satellite Number</strong></td><td>${item.satelliteNumber}</td></tr>
-      <tr><td><strong>Classification</strong></td><td>${item.classification}</td></tr>
+      <tr><td><strong>Satellite Number</strong></td><td>${
+        item.satelliteNumber
+      }</td></tr>
+      <tr><td><strong>Classification</strong></td><td>${
+        item.classification
+      }</td></tr>
       <tr><td><strong>Launch</strong></td><td>${item.launch}</td></tr>
-      <tr><td><strong>Launch Piece</strong></td><td>${item.launchPiece}</td></tr>
+      <tr><td><strong>Launch Piece</strong></td><td>${
+        item.launchPiece
+      }</td></tr>
       <tr><td><strong>Epoch</strong></td><td>${item.epoch}</td></tr>
-      <tr><td><strong>First Time Derivative</strong></td><td>${item.firstTimeDerivative}</td></tr>
-      <tr><td><strong>Second Time Derivative</strong></td><td>${item.secondTimeDerivative}</td></tr>
-      <tr><td><strong>Bstar Drag Term</strong></td><td>${item.bstarDragTerm}</td></tr>
-      <tr><td><strong>Ephemeris Type</strong></td><td>${item.ephemerisType}</td></tr>
-      <tr><td><strong>Element Number</strong></td><td>${item.elementNumber}</td></tr>
+      <tr><td><strong>First Time Derivative</strong></td><td>${
+        item.firstTimeDerivative
+      }</td></tr>
+      <tr><td><strong>Second Time Derivative</strong></td><td>${
+        item.secondTimeDerivative
+      }</td></tr>
+      <tr><td><strong>Bstar Drag Term</strong></td><td>${
+        item.bstarDragTerm
+      }</td></tr>
+      <tr><td><strong>Ephemeris Type</strong></td><td>${
+        item.ephemerisType
+      }</td></tr>
+      <tr><td><strong>Element Number</strong></td><td>${
+        item.elementNumber
+      }</td></tr>
       <tr><td><strong>Inclination</strong></td><td>${item.inclination}</td></tr>
-      <tr><td><strong>Right Ascension</strong></td><td>${item.rightAscension}</td></tr>
-      <tr><td><strong>Eccentricity</strong></td><td>${item.eccentricity}</td></tr>
-      <tr><td><strong>Argument of Perigee</strong></td><td>${item.argumentOfPerigee}</td></tr>
-      <tr><td><strong>Mean Anomaly</strong></td><td>${item.meanAnomaly}</td></tr>
+      <tr><td><strong>Right Ascension</strong></td><td>${
+        item.rightAscension
+      }</td></tr>
+      <tr><td><strong>Eccentricity</strong></td><td>${
+        item.eccentricity
+      }</td></tr>
+      <tr><td><strong>Argument of Perigee</strong></td><td>${
+        item.argumentOfPerigee
+      }</td></tr>
+      <tr><td><strong>Mean Anomaly</strong></td><td>${
+        item.meanAnomaly
+      }</td></tr>
       <tr><td><strong>Mean Motion</strong></td><td>${item.meanMotion}</td></tr>
-      <tr><td><strong>Fetch Timestamp</strong></td><td>${item.fetchTimestamp}</td></tr>
+      <tr><td><strong>Fetch Timestamp</strong></td><td>${
+        item.fetchTimestamp
+      }</td></tr>
       <tr><td><strong>Latitude</strong></td><td>${item.latitude}</td></tr>
       <tr><td><strong>Longitude</strong></td><td>${item.longitude}</td></tr>
-      <tr><td><strong>Country / Organization</strong></td><td>${item.info === 'null' ? '-' : item.info}</td></tr>
+      <tr><td><strong>Country / Organization</strong></td><td>${
+        item.info === 'null' ? '-' : item.info
+      }</td></tr>
       </tbody>
       </table>
       `
-      
-      $('#modal').modal('show');
 
+      $('#modal').modal('show')
     })
     .catch(error => {
       console.error('Error fetching modal:', error)
