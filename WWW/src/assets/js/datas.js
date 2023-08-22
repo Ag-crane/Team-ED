@@ -69,7 +69,7 @@ function sendSearchData () {
         <td>${item.satelliteId}</td>
         <td>${
           item.name === 'UNKNOWN'
-            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
             : item.name
         }</td>
         <td>${item.info === null ? '-' : item.info}</td>
@@ -80,6 +80,7 @@ function sendSearchData () {
         <td>${item.longitude.toFixed(6)}</td>
         <td>${item.launch}</td>
         `
+        
         document.getElementById('data-list-table').appendChild(row)
       })
       document.getElementById('pagination').innerHTML = '' // Clear existing pagination
@@ -186,7 +187,7 @@ function fetchData (pageNumber) {
         <td>${item.satelliteId}</td>
         <td>${
           item.name === 'UNKNOWN'
-            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyRow()">수정</button>'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
             : item.name
         }</td>
         <td>${item.info === null ? '-' : item.info}</td>
@@ -260,7 +261,6 @@ function addEventListeners () {
       } else {
         currentPage = Number(link.innerText)
       }
-      console.log('현재 페이지 : ', currentPage)
 
       fetchData(currentPage)
     })
@@ -269,7 +269,6 @@ function addEventListeners () {
 
 // 모달 창 띄우기
 function openModal (item) {
-  console.log(item)
   const modalContainer = document.getElementById('modal-container')
   modalContainer.innerHTML = ''
 
