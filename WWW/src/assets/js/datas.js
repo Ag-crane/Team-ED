@@ -23,7 +23,6 @@ function setSearchType (type) {
   searchType = type
   document.getElementById('dropdownBtn').innerHTML =
     searchType === 'name' ? '위성 이름' : '위성 번호' // Clear input value
-  updatePlaceholder()
 }
 
 function sendSearchData () {
@@ -69,7 +68,7 @@ function sendSearchData () {
         <td>${item.satelliteId}</td>
         <td>${
           item.name === 'UNKNOWN'
-            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName(event)">수정</button>'
             : item.name
         }</td>
         <td>${item.info === null ? '-' : item.info}</td>
@@ -80,7 +79,7 @@ function sendSearchData () {
         <td>${item.longitude.toFixed(6)}</td>
         <td>${item.launch}</td>
         `
-        
+
         document.getElementById('data-list-table').appendChild(row)
       })
       document.getElementById('pagination').innerHTML = '' // Clear existing pagination
@@ -90,8 +89,8 @@ function sendSearchData () {
     })
 }
 
-// 수정
-function modifyName () {
+// UNKNOWN 데이터 이름 수정
+function modifyName (event) {
   const unknownButton = event.target
   const row = unknownButton.closest('tr')
   const nameCell = row.querySelector('td:nth-child(3)')
@@ -100,17 +99,21 @@ function modifyName () {
   if (newName !== null) {
     const originalButton = nameCell.querySelector('button')
     if (originalButton) {
-      nameCell.innerHTML =
-        newName +
-        ' <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
+      const updateButton = document.createElement('button')
+      updateButton.type = 'button'
+      updateButton.id = 'update-btn'
+      updateButton.textContent = '수정'
+      updateButton.addEventListener('click', modifyName)
+
+      nameCell.innerHTML = ''
+      nameCell.appendChild(document.createTextNode(newName))
+      nameCell.appendChild(updateButton)
     } else {
-      nameCell.innerHTML = newName
+      nameCell.textContent = newName
     }
 
     const satelliteId = row.querySelector('td:nth-child(2)').textContent
     sendModifiedNameToServer(satelliteId, newName)
-
-    fetchData(currentPage) // 수정 후 데이터 업데이트
 
     event.stopPropagation() // 모달 열림 방지
   }
@@ -133,7 +136,7 @@ function sendModifiedNameToServer (satelliteId, newName) {
       if (!response.ok) {
         throw new Error('Network response was not ok.')
       }
-      console.log('Name modification successful')
+      alert('이름이 성공적으로 수정되었습니다.')
     })
     .catch(error => {
       console.error('Error sending modified name to server:', error)
@@ -187,7 +190,7 @@ function fetchData (pageNumber) {
         <td>${item.satelliteId}</td>
         <td>${
           item.name === 'UNKNOWN'
-            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName()">수정</button>'
+            ? 'UNKNOWN  <button type="button" id="update-btn" onclick="modifyName(event)">수정</button>'
             : item.name
         }</td>
         <td>${item.info === null ? '-' : item.info}</td>
