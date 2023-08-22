@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b2c08457-2478-481b-93bc-b925a469017a" name="Changes" comment="" />
+    <list default="true" id="b2c08457-2478-481b-93bc-b925a469017a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WWW/src/assets/js/custom/dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/WWW/src/assets/js/custom/dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WWW/src/assets/js/custom/datas.js" beforeDir="false" afterPath="$PROJECT_DIR$/WWW/src/assets/js/custom/datas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WWW/src/assets/js/custom/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/WWW/src/assets/js/custom/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WWW/src/assets/js/custom/logs.js" beforeDir="false" afterPath="$PROJECT_DIR$/WWW/src/assets/js/custom/logs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WWW/src/assets/js/shared/chart.js" beforeDir="false" afterPath="$PROJECT_DIR$/WWW/src/assets/js/shared/chart.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,7 +43,7 @@
       <updated>1691629344771</updated>
       <workItem from="1691629346431" duration="1963000" />
       <workItem from="1691723663150" duration="1790000" />
-      <workItem from="1692692437630" duration="4871000" />
+      <workItem from="1692692437630" duration="5184000" />
     </task>
     <servers />
   </component>
