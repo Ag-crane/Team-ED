@@ -1,7 +1,0 @@
-node_modules
-package-lock.json
-/config.yml
-.vscode
-.gitignore
-*.yml
-API_SERVER/satellite/.idea

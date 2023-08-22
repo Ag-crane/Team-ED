@@ -1,3 +1,21 @@
+// 스피너
+const spinnerBox = document.getElementById('spinnerBox')
+
+function showSpinner () {
+  const spinnerHtml = `
+  <div class="d-flex"">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>`
+  spinnerBox.innerHTML = spinnerHtml
+  spinnerBox.style.display = 'flex'
+}
+
+function hideSpinner () {
+  spinnerBox.style.display = 'none'
+}
+
 // 검색
 var searchType = 'name' // 기본 검색 유형 설정
 
@@ -32,14 +50,16 @@ function sendSearchData () {
       data.forEach((item, index) => {
         document.getElementById('data-list-table').innerHTML += `
                 <tr>
-                  <td>${index + 1}</td>
-                  <td>${item.satelliteId}</td>
-                  <td>${item.name}</td>
-                  <td><label class="badge badge-danger">${
-                    item.classification
-                  }</label></td>
-                  <td>${item.launch.slice(0, 2)}</td>
-                  <td>${item.date.slice(0, 10)}</td>
+                <td>${index + 1}</td>
+                <td>${item.satelliteId}</td>
+                <td>${item.name}</td>
+                <td>${item.info === null ? '-' : item.info}</td>
+                <td><label class="badge badge-danger">${
+                  item.classification
+                }</label></td>
+                <td>${item.latitude.toFixed(6)}</td> 
+                <td>${item.longitude.toFixed(6)}</td>
+                <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
                 </tr>
               `
       })
@@ -59,6 +79,8 @@ let perPage = 10 // Pagination 한 번에 보여줄 페이지 수
 const token = localStorage.getItem('token') // 로그인 시 저장된 토큰
 
 function fetchData (pageNumber) {
+  showSpinner()
+
   fetch(serverUrl + `/data/page/${pageNumber}`, {
     method: 'GET',
     headers: {
@@ -73,19 +95,23 @@ function fetchData (pageNumber) {
       return res.json()
     })
     .then(data => {
+      hideSpinner()
+      
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.content.forEach((item, index) => {
         const row = document.createElement('tr')
         row.addEventListener('click', () => openModal(item))
-
-        row.innerHTML = `<td>${index + 1}</td>
+        row.innerHTML = `
+        <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
         <td>${item.name}</td>
+        <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
         }</label></td>
-        <td>${item.launch.slice(0, 2)}</td>
-        <td>${item.date.slice(0, 10)}</td>
+        <td>${item.latitude.toFixed(6)}</td> 
+        <td>${item.longitude.toFixed(6)}</td>
+        <td>${item.launch.slice(0,2) < 23 ? '20' : '19'}${item.launch.slice(0,2)}</td>
         `
 
         document.getElementById('data-list-table').appendChild(row)
@@ -197,6 +223,9 @@ function openModal (item) {
       <tr><td><strong>Mean Anomaly</strong></td><td>${item.meanAnomaly}</td></tr>
       <tr><td><strong>Mean Motion</strong></td><td>${item.meanMotion}</td></tr>
       <tr><td><strong>Fetch Timestamp</strong></td><td>${item.fetchTimestamp}</td></tr>
+      <tr><td><strong>Latitude</strong></td><td>${item.latitude}</td></tr>
+      <tr><td><strong>Longitude</strong></td><td>${item.longitude}</td></tr>
+      <tr><td><strong>Country / Organization</strong></td><td>${item.info === 'null' ? '-' : item.info}</td></tr>
       </tbody>
       </table>
       `
