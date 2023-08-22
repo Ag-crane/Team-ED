@@ -87,4 +87,7 @@ public class TleData {
 
     @Column(name = "longitude")
     private Double longitude;
+
+    @Column(name = "info")
+    private String info;
 }

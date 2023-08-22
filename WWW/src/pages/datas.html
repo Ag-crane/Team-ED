@@ -35,7 +35,6 @@
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <!-- custom js -->
-    <script src="../assets/js/custom/removeAd.js"></script>
   </head>
   <body>
     <div class="container-scroller">
@@ -50,60 +49,101 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">데이터 목록</h4>
-                  <table class="table table-hover table-bordered text-center">
+                  <!-- 검색 -->
+                  <div class="col-lg-6 input-group mb-3">
+                    <div class="input-group-prepend">
+                      <button
+                        id="dropdownBtn"
+                        class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                      >
+                        선택하세요
+                      </button>
+                      <div class="dropdown-menu">
+                        <a
+                          class="dropdown-item"
+                          onclick="setSearchType('name');"
+                          >위성 이름</a
+                        >
+                        <a
+                          class="dropdown-item"
+                          onclick="setSearchType('id');"
+                          >위성 번호</a
+                        >
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="satelliteValue"
+                      placeholder="데이터 찾기"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      onclick="sendSearchData()"
+                    >
+                      검색
+                    </button>
+                  </div>
+                  <div id="spinnerBox"></div>
+                  <table class="table table-hover table-bordered text-center justify-content-center align-items-center">
                     <thead>
                       <tr>
                         <th>No.</th>
                         <th>위성 번호</th>
                         <th>위성 이름</th>
+                        <th>소유 국가/단체</th>
                         <th>분류</th>
-                        <th>최초 발사 년도</th>
-                        <th>최종 수집 일자</th>
+                        <th>위도</th>
+                        <th>경도</th>
+                        <th>발사 년도</th>
                       </tr>
                     </thead>
                     <tbody id="data-list-table"></tbody>
                   </table>
                 </div>
                 <!-- pagenation -->
-                <nav aria-label="page navigation">
+                <nav id="pagination" aria-label="page navigation">
                   <ul class="pagination justify-content-center">
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Previous">
+                      <a class="page-link" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                       </a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">1</a>
+                      <a class="page-link">1</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">2</a>
+                      <a class="page-link">2</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">3</a>
+                      <a class="page-link">3</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">4</a>
+                      <a class="page-link">4</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">5</a>
+                      <a class="page-link">5</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">6</a>
+                      <a class="page-link">6</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">7</a>
+                      <a class="page-link">7</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">8</a>
+                      <a class="page-link">8</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">9</a>
+                      <a class="page-link">9</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#">10</a>
+                      <a class="page-link">10</a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
+                      <a class="page-link" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                       </a>
                     </li>
@@ -124,30 +164,20 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    
+    <!-- modal -->
+    <div id="modal-container"></div>
 
-    <!-- partials -->
-    <script>
-      fetch("../partials/_footer.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("footer").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
-
-      fetch("../partials/_sidebar.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("sidebar").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
-    </script>
+    <!-- loader -->
+    <script src="../assets/js/loader.js"></script>
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>
-    <script src="../assets/js/shared/off-canvas.js"></script>
-    <script src="../assets/js/shared/misc.js"></script>
+    <script src="../assets/js/off-canvas.js"></script>
+    <script src="../assets/js/misc.js"></script>
 
     <!-- custom js -->
-    <script src="../assets/js/custom/datas.js"></script>
+    <script src="../assets/js/datas.js"></script>
   </body>
+  <script src="../assets/js/logout.js"></script>
 </html>

@@ -1,3 +1,9 @@
+#spinnerBox {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+}
 /*------------------------------------------------------------------
  [Master Stylesheet]
 

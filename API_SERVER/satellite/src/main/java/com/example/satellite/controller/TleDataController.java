@@ -3,18 +3,19 @@ package com.example.satellite.controller;
 import com.example.satellite.domain.TleData;
 import com.example.satellite.dto.RecentSatelliteDto;
 import com.example.satellite.dto.SatelliteDashboardDto;
+import com.example.satellite.dto.UpdateTleDataDto;
 import com.example.satellite.repository.TleDataRepository;
 import com.example.satellite.service.TleDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/data")
 public class TleDataController {
@@ -30,6 +31,7 @@ public class TleDataController {
 
     @GetMapping
     public List<TleData> getAllTleData() {
+
         return repository.findAll();
     }
 
@@ -59,4 +61,21 @@ public class TleDataController {
     public String test(){
         return "test";
     }
+
+    @GetMapping("/search")
+    public List<TleData> getTleDataBySatelliteName(@RequestParam String name) {
+        log.info("name: {}", name);
+        return service.getSearchedTleData(name);
+    }
+
+    @GetMapping("/search/satellite-id")
+    public List<TleData> getTleDataBySatelliteId(@RequestParam String satelliteId) {
+        return service.getSearchedTleDataBySatelliteId(satelliteId);
+    }
+
+    @PutMapping("/{satelliteId}")
+    public TleData updateTleData(@PathVariable int id, @RequestBody UpdateTleDataDto tleData) {
+        return service.updateTleData(id, tleData);
+    }
+
 }

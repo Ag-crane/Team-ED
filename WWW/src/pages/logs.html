@@ -41,7 +41,6 @@
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <!-- custom js -->
-    <script src="../assets/js/custom/removeAd.js"></script>
   </head>
   <body>
     <div class="container-scroller">
@@ -55,57 +54,15 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">수집 로그</h4>
-                  <div class="col-lg-6 input-group mb-3">
-                    <div class="input-group-prepend">
-                      <button
-                        class="btn btn-outline-secondary dropdown-toggle"
-                        type="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        선택하세요
-                      </button>
-                      <div class="dropdown-menu">
-                        <a
-                          class="dropdown-item"
-                          href="#"
-                          onclick="setSearchType('name');"
-                          >위성 이름</a
-                        >
-                        <a
-                          class="dropdown-item"
-                          href="#"
-                          onclick="setSearchType('id');"
-                          >위성 번호</a
-                        >
-                      </div>
-                    </div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="satelliteValue"
-                      aria-label="Text input with dropdown button"
-                      placeholder="위성 이름 또는 번호"
-                    />
-                    <button
-                      class="btn btn-outline-secondary"
-                      type="button"
-                      onclick="sendSearchData()"
-                    >
-                      검색
-                    </button>
-                  </div>
-
+                  <div id="spinnerBox"></div>
                   <table class="table table-hover table-bordered text-center">
                     <thead>
                       <tr>
                         <th>No.</th>
-                        <th>수집 일시</th>
+                        <th>데이터 수집 일시</th>
+                        <th>최종 관측 일시</th>
                         <th>위성 번호</th>
                         <th>위성 이름</th>
-                        <th>분류</th>
-                        <th>발사 년도</th>
                       </tr>
                     </thead>
                     <tbody id="data-collect-table"></tbody>
@@ -171,29 +128,17 @@
     </div>
     <!-- container-scroller ends -->
 
-    <!-- partials -->
-    <script>
-      fetch("../partials/_footer.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("footer").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
-
-      fetch("../partials/_sidebar.html")
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("sidebar").innerHTML = html;
-        })
-        .catch((error) => console.warn(error));
-    </script>
+    <!-- loader -->
+    <script src="../assets/js/loader.js"></script>
+    
     <!-- template js -->
     <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="../assets/vendors/js/vendor.bundle.addons.js"></script>
-    <script src="../assets/js/shared/off-canvas.js"></script>
-    <script src="../assets/js/shared/misc.js"></script>
+    <script src="../assets/js/off-canvas.js"></script>
+    <script src="../assets/js/misc.js"></script>
 
     <!-- custom js -->
-    <script src="../assets/js/custom/logs.js"></script>
+    <script src="../assets/js/logs.js"></script>
   </body>
+  <script src="../assets/js/logout.js"></script>
 </html>
