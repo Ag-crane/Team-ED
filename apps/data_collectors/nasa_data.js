@@ -401,7 +401,7 @@ function saveTLEData(tleData, fetchTime) {
                   if (error) {
                     console.error("Error updating TLE data:", error);
                   } else {
-                    //console.log(`TLE data saved successfully for Satellite Name: ${name}, Info: ${info}`);
+                    //console.log("TLE data saved successfully:", name);
                   }
                 });
               
