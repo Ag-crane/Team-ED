@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class TleDataService {
 
@@ -73,18 +74,14 @@ public class TleDataService {
         return repository.findByNameContaining(satelliteName);
     }
 
-    public TleData updateTleData(int id, UpdateTleDataDto updateTleDataDto) {
-        if(repository.existsById((long) id)){
-            TleData tleData = repository.findById((long) id).get();
-            tleData.setSatelliteNumber(updateTleDataDto.getSatelliteNumber());
-            tleData.setName(updateTleDataDto.getName());
-            tleData.setClassification(updateTleDataDto.getClassification());
-            tleData.setFirstLaunch(updateTleDataDto.getFirstLaunch());
-            return repository.save(tleData);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TleData not found");
-        }
+
+    public TleData updateTleData(String id, UpdateTleDataDto updateTleDataDto) {
+        TleData tleData = repository.findBySatelliteId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TleData not found"));
+        tleData.setName(updateTleDataDto.getName());
+        return repository.save(tleData);
     }
+
 
     public List<TleData> getSearchedTleDataBySatelliteId(String satelliteId) {
         Optional<TleData> optionalTleData = repository.findBySatelliteId(satelliteId);
