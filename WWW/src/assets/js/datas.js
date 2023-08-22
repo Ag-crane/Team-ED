@@ -53,7 +53,7 @@ function sendSearchData () {
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name}</td>
+        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN <button type="button" id="unknown-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
@@ -97,16 +97,20 @@ function fetchData (pageNumber) {
       return res.json()
     })
     .then(data => {
+
+
       hideSpinner()
       
       document.getElementById('data-list-table').innerHTML = '' // Clear existing data
       data.content.forEach((item, index) => {
+        
+
         const row = document.createElement('tr')
         row.addEventListener('click', () => openModal(item))
         row.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.satelliteId}</td>
-        <td>${item.name}</td>
+        <td>${item.name === 'UNKNOWN' ? 'UNKNOWN  <button type="button" id="unknown-btn" onclick="modifyRow()">수정</button>' : item.name}</td>
         <td>${item.info === null ? '-' : item.info}</td>
         <td><label class="badge badge-danger">${
           item.classification
