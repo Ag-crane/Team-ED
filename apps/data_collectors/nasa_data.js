@@ -33,15 +33,19 @@ async function sleep(ms) {
 }
 
 function saveTLEInfo(updatedCount, newCount, totalCount, fetchTime) {
-  const queryInsertInfo = "INSERT INTO tle_data_info (updated_count, new_count, total_count, fetch_time) VALUES (?, ?, ?, ?)";
-
-  connection.query(queryInsertInfo, [updatedCount, newCount, totalCount, fetchTime], (error, results) => {
-    if (error) {
-      console.error("Error saving TLE info:", error);
-    } else {
-      //console.log("TLE info saved successfully.");
+  const queryInsertInfo =
+    "INSERT INTO tle_data_info (updated_count, new_count, total_count, fetch_time) VALUES (?, ?, ?, ?)";
+  connection.query(
+    queryInsertInfo,
+    [updatedCount, newCount, totalCount, fetchTime],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving TLE info:", error);
+      } else {
+        //console.log("TLE info saved successfully.");
+      }
     }
-  });
+  );
 }
 
 async function getTotalCount() {
@@ -81,6 +85,116 @@ function calculateSatellitePosition(line1, line2, date) {
   };
 }
 
+function updateInfoBasedOnName(name) {
+  if (name.startsWith('BEIDOU')) {
+    return '중국';
+  } else if (name.startsWith('COSMOS')) {
+    return '러시아';
+  } else if (name.startsWith('EUTELSAT')) {
+    return 'Eutelsat';
+  } else if (name.startsWith('FALCON')) {
+    return 'SpaceX';
+  } else if (name.startsWith('FENGYUN')) {
+    return '중국';
+  } else if (name.startsWith('GALAXY')) {
+    return 'Intelsat';
+  } else if (name.startsWith('INTELSAT')) {
+    return 'Intelsat';
+  } else if (name.startsWith('GAOFEN')) {
+    return '중국';
+  } else if (name.startsWith('GLOBALSTAR')) {
+    return 'Globalstar';
+  } else if (name.startsWith('GONETS')) {
+    return '러시아';
+  } else if (name.startsWith('GORIZONT')) {
+    return '러시아';
+  } else if (name.startsWith('GOES')) {
+    return '미국';
+  } else if (name.startsWith('GPS BIIA')) {
+    return '미국';
+  } else if (name.startsWith('GPS BIIF')) {
+    return '미국';
+  } else if (name.startsWith('GPS BIII')) {
+    return '미국';
+  } else if (name.startsWith('GPS BIIIR')) {
+    return '미국';
+  } else if (name.startsWith('GPS BIIIRM')) {
+    return '미국';
+  } else if (name.startsWith('GSAT')) {
+    return '인도';
+  } else if (name.startsWith('IRIDIUM')) {
+    return 'Iridium communication system';
+  } else if (name.startsWith('LEMUR')) {
+    return 'Spire Global';
+  } else if (name.startsWith('MOLNIYA')) {
+    return '러시아';
+  } else if (name.startsWith('RADUGA')) {
+    return '러시아';
+  } else if (name.startsWith('NUSAT')) {
+    return '아르헨티나';
+  } else if (name.startsWith('ONEWEB')) {
+    return 'ONEWEB';
+  } else if (name.startsWith('ORBCOMM')) {
+    return 'ORBCOMM';
+  } else if (name.startsWith('SHIJIAN')) {
+    return '중국';
+  } else if (name.startsWith('SHIYAN')) {
+    return '중국';
+  } else if (name.startsWith('SPACEBEE')) {
+    return 'Swarm Technologies';
+  } else if (name.startsWith('STARLINK')) {
+    return 'SpaceX';
+  } else if (name.startsWith('APRIZESAT')) {
+    return '미국, 영국';
+  } else if (name.startsWith('ASTROCAST')) {
+    return 'Astrocast SA';
+  } else if (name.startsWith('CHINASAT')) {
+    return '중국';
+  } else if (name.startsWith('CZ')) {
+    return '중국';
+  } else if (name.startsWith('ECHOSTAR')) {
+    return 'EchoStar Satellite Services';
+  } else if (name.startsWith('YAOGAN')) {
+    return '중국';
+  } else if (name.startsWith('ISS')) {
+    return '국제우주정거장';
+  } else if (name.startsWith('YUNHAI')) {
+    return '중국';
+  } else if (name.startsWith('NOAA')) {
+    return '미국';
+  } else if (name.startsWith('USA')) {
+    return '미국';
+  } else if (name.startsWith('WGS')) {
+    return '미국';
+  } else if (name.startsWith('UNKNOWN')) {
+    return '비식별위성';
+  } else if (name.startsWith('GALILEO')) {
+    return '유럽';
+  } else if (name.startsWith('ROBUSTA')) {
+    return '프랑스';
+  } else if (name.startsWith('INMARSAT')) {
+    return 'Inmarsat';
+  } else if (name.startsWith('JILIN')) {
+    return '중국';
+  } else if (name.startsWith('KANOPUS')) {
+    return '러시아';
+  } else if (name.startsWith('KEPLER')) {
+    return 'NASA';
+  } else if (name.startsWith('KOREASAT')) {
+    return '대한민국';
+  } else if (name.startsWith('KSF')) {
+    return '대한민국';
+  } else if (name.startsWith('O3B')) {
+    return 'O3B Networks';
+  } else if (name.startsWith('SAUDI')) {
+    return '사우디 아라비아';
+  } else if (name.startsWith('SKYSAT')) {
+    return 'Planets Labs';
+  }
+  
+  return null;
+}
+
 function processTLEData(tleData, fetchTime) {
   const extractedTLEData = [];
 
@@ -117,6 +231,7 @@ function processTLEData(tleData, fetchTime) {
       const satellitePosition = calculateSatellitePosition(line1, line2, new Date(tle.date));
       const latitude = satellitePosition.latitude;
       const longitude = satellitePosition.longitude;
+      const info = updateInfoBasedOnName(tle.name);
 
       extractedTLEData.push({
         satellite_id: tle.satelliteId,
@@ -129,6 +244,8 @@ function processTLEData(tleData, fetchTime) {
         fetch_timestamp: fetchTime,
         latitude: latitude,
         longitude: longitude,
+        info: info,
+        isNew: true,
       });
     } else {
       console.error("Line data is not available for this TLE.");
@@ -154,7 +271,10 @@ function saveTLEData(tleData, fetchTime) {
     const latitude = tle.latitude;
     const longitude = tle.longitude;
     const first_launch = line1Fields.firstLaunch;
+    const isNew = tle.isNew ? 1 : 0;
+    const info = tle.info;
 
+    //console.log(`Satellite Name: ${name}, Info: ${info}`);
     const changed_time = new Date()
       .toISOString()
       .slice(0, 19)
@@ -193,12 +313,14 @@ function saveTLEData(tleData, fetchTime) {
                 fetch_timestamp: fetchTime,
                 latitude: latitude,
                 longitude: longitude,
+                info: info,
+                isNew: isNew,
               },
               (error, results) => {
                 if (error) {
                   console.error("Error saving TLE data:", error);
                 } else {
-                  //console.log("TLE data saved successfully for:", name);
+                  //console.log("TLE data saved successfully for :",name);
                 }
               }
             );
@@ -232,12 +354,13 @@ function saveTLEData(tleData, fetchTime) {
                 changed_time,
                 latitude,
                 longitude,
+                isNew,
               ],
               (error, results) => {
                 if (error) {
                   console.error("Error saving TLE data to tle_data_log:", error);
                 } else {
-                  //console.log("TLE data saved to tle_data_log successfully for:",name);
+                  //console.log("TLE data saved to tle_data_log successfully for:", name);
                 }
               }
             );
@@ -267,28 +390,23 @@ function saveTLEData(tleData, fetchTime) {
               fetch_timestamp: fetchTime,
               latitude: latitude,
               longitude: longitude,
+              info: info,
             };
 
             const hasChanges =
               JSON.stringify(existingData) !== JSON.stringify(newData);
 
-            if (hasChanges) {
-              connection.query(
-                queryUpdate,
-                [{ ...newData }, satellite_id],
-                (error, results) => {
+              if (hasChanges) {
+                connection.query(queryUpdate, [{ ...newData }, satellite_id], (error, results) => {
                   if (error) {
                     console.error("Error updating TLE data:", error);
                   } else {
-                    //console.log("TLE data updated successfully for:", name);
+                    //console.log(`TLE data saved successfully for Satellite Name: ${name}, Info: ${info}`);
                   }
-                }
-              );
-
-              // tle_data_log 테이블
-              connection.query(
-                queryInsertLog,
-                [
+                });
+              
+                // tle_data_log 테이블
+                connection.query(queryInsertLog, [
                   satellite_id,
                   name,
                   date,
@@ -314,6 +432,7 @@ function saveTLEData(tleData, fetchTime) {
                   changed_time,
                   latitude,
                   longitude,
+                  isNew ? 1 : 0,
                 ],
                 (error, results) => {
                   if (error) {
@@ -361,14 +480,13 @@ async function fetchTLE() {
       const extractedTLEData = processTLEData(tleData.member, formattedFetchTime);
 
       const updatedCount = extractedTLEData.length;
-      const newCount = extractedTLEData.filter(entry => entry.isNew).length;
+      const newCount = extractedTLEData.filter(tle => tle.isNew === 1).length;
 
       totalUpdatedCount += updatedCount;
       totalNewCount += newCount;
 
       if (extractedTLEData.length > 0) {
         await saveTLEData(extractedTLEData, formattedFetchTime);
-
       } else {
         console.error("Processed TLE data is empty or invalid.");
       }
@@ -379,17 +497,19 @@ async function fetchTLE() {
 
       if (pageCounter === 100) {
         console.log(`Wait...`);
-        await sleep(15 * 60 * 1000); // 100페이지마다 15분 대기
+        await sleep(10 * 60 * 1000); // 100페이지마다 10분 대기
         pageCounter = 0;
       }
     }
     
-    const totalCount = await getTotalCount(); 
+    const totalCount = await getTotalCount();
     saveTLEInfo(totalUpdatedCount, totalNewCount, totalCount, formattedFetchTime);
 
   } catch (error) {
     console.error("Error fetching or saving TLE data:", error);
-    console.log("Retrying in 1 hour...");
+    
+    const totalCount = await getTotalCount();
+    saveTLEInfo(totalUpdatedCount, totalNewCount, totalCount, formattedFetchTime);;
 
     if (connection && !connection._closed) {
       connection.end();
@@ -397,31 +517,22 @@ async function fetchTLE() {
 
     await sleep(60 * 60 * 1000);
 
-    connection = mysql.createConnection(mysqlConfig);
-    connection.connect((error) => {
-      if (error) {
-        console.error("Error connecting to the database:", error);
-      } else {
-        console.log("Reconnected to the MySQL database.");
-        fetchTLE();
-      }
-    });
+    fetchTLE();
   }
 }
+
 
 async function run() {
   while (true) {
     totalUpdatedCount = 0;
+    totalNewCount = 0;
     console.log("Fetching TLE data from API...");
     try {
       await fetchTLE();
-      const totalCount = await getTotalCount();
-      const fetchTime = new Date().toISOString().slice(0, 19).replace("T", " ");
-      saveTLEInfo(totalUpdatedCount, totalNewCount, totalCount, fetchTime);
     } catch (error) {
       console.error("Error occurred:", error);
     }
-    await sleep(120 * 60 * 1000); // 120분마다 갱신
+    await sleep(150 * 60 * 1000); // 150분마다 갱신
   }
 }
 
