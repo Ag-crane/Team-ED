@@ -34,6 +34,9 @@ public class TleData {
     @Column(name = "launch")
     private String launch;
 
+    @Column(name = "first_launch")
+    private String firstLaunch;
+
     @Column(name = "launch_piece")
     private String launchPiece;
 
@@ -78,4 +81,13 @@ public class TleData {
 
     @Column(name = "fetch_timestamp")
     private Date fetchTimestamp;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "info")
+    private String info;
 }

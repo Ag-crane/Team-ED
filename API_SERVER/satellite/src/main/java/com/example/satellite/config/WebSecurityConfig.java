@@ -23,12 +23,12 @@ public class WebSecurityConfig {
     private final UserDetailService userService;
     private final TokenProvider tokenProvider;
 
-    @Bean
-    public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring()
-                .requestMatchers(toH2Console());
-//                .requestMatchers("/static/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer configure() {
+//        return (web) -> web.ignoring()
+//                .requestMatchers(toH2Console());
+////                .requestMatchers("/static/**");
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class) // 필터 추가
                 .authorizeRequests()
-                    .antMatchers("/", "/user", "/login", "/error").permitAll()
+                    .antMatchers("/", "/user", "/login", "/error", "/data", "/data/recent", "/data/page/timestamp/**", "/data/dashboard", "/data/page/**", "/api/token", "/data/search/**", "/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .logout()

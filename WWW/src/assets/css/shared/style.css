@@ -1,3 +1,20 @@
+#update-btn{
+  background-color: #00aeef;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#spinnerBox {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+}
 /*------------------------------------------------------------------
  [Master Stylesheet]
 
@@ -9757,7 +9774,7 @@ ul {
 .auth {
   min-height: 100vh; }
   .auth.auth-bg-1 {
-    background: url("../../images/auth/login_1.jpg");
+    background: url("../../images/login_background.jpg");
     background-size: cover; }
   .auth.register-bg-1 {
     background: url("../../images/auth/register.jpg") center center no-repeat;

@@ -3,14 +3,20 @@ package com.example.satellite.service;
 import com.example.satellite.domain.TleData;
 import com.example.satellite.dto.SatelliteDashboardDto;
 import com.example.satellite.dto.RecentSatelliteDto;
+import com.example.satellite.dto.UpdateTleDataDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.example.satellite.repository.TleDataRepository;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 public class TleDataService {
@@ -64,4 +70,21 @@ public class TleDataService {
         return this.repository.findAllByOrderByFetchTimestampDesc(pageable);
     }
 
+    public List<TleData> getSearchedTleData(String satelliteName) {
+        return repository.findByNameContaining(satelliteName);
+    }
+
+
+    public TleData updateTleData(String id, UpdateTleDataDto updateTleDataDto) {
+        TleData tleData = repository.findBySatelliteId(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TleData not found"));
+        tleData.setName(updateTleDataDto.getName());
+        return repository.save(tleData);
+    }
+
+
+    public List<TleData> getSearchedTleDataBySatelliteId(String satelliteId) {
+        Optional<TleData> optionalTleData = repository.findBySatelliteId(satelliteId);
+        return optionalTleData.map(Collections::singletonList).orElse(Collections.emptyList());
+    }
 }
