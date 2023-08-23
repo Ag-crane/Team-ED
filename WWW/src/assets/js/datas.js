@@ -58,7 +58,7 @@ function sendSearchData () {
         ) {
           item.launch = '-'
         } else {
-          const launchYear = parseInt(item.launch.slice(0, 2), 10)
+          const launchYear = item.launch.slice(0, 2)
           item.launch = launchYear < 23 ? `20${launchYear}` : `19${launchYear}`
         }
         const row = document.createElement('tr')
@@ -176,11 +176,11 @@ function fetchData (pageNumber) {
         if (
           item.launch === null ||
           typeof item.launch !== 'string' ||
-          isNaN(parseInt(item.launch.slice(0, 2), 10))
+          isNaN(parseInt(item.launch.slice(0, 2), 10))     // 빈 값이거나 숫자가 아닐 경우
         ) {
           item.launch = '-'
         } else {
-          const launchYear = parseInt(item.launch.slice(0, 2), 10)
+          const launchYear = item.launch.slice(0, 2)
           item.launch = launchYear < 23 ? `20${launchYear}` : `19${launchYear}`
         }
         const row = document.createElement('tr')

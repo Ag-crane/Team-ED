@@ -42,6 +42,13 @@
       return res.json()
     })
     .then(data => {
+      // 데이터를 fetchTime 순으로 정렬
+      data.sort(function (a, b) {
+        const dateA = new Date(a.fetchTime)
+        const dateB = new Date(b.fetchTime)
+        return dateB - dateA
+      })
+      // 최근 5개만 테이블에 추가
       data.slice(0, 5).forEach((item, index) => {
         document.getElementById('table2-body').innerHTML += `
       <tr>
